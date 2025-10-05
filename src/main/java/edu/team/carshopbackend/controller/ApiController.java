@@ -8,7 +8,7 @@ public class ApiController {
 
     @GetMapping("hello_world")
     public String helloWorld() {
-        return "Hello World!";
+        return "Hello Piwo!";
     }
 
     @PostMapping("test_post/{id}")
