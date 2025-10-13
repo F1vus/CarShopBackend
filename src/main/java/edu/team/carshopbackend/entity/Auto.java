@@ -1,5 +1,6 @@
 package edu.team.carshopbackend.entity;
 
+import edu.team.carshopbackend.entity.enums.AutoState;
 import edu.team.carshopbackend.entity.enums.converter.AutoStateConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -55,6 +56,6 @@ public class Auto {
 
     @Column(name = "state")
     @Convert(converter = AutoStateConverter.class)
-    private String state;
+    private AutoState state;
 
 }
