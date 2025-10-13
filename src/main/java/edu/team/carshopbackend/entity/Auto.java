@@ -1,124 +1,60 @@
 package edu.team.carshopbackend.entity;
 
+import edu.team.carshopbackend.entity.enums.converter.AutoStateConverter;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @Entity
-@Table(name = "auto")
+@Table(name = "autos")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class Auto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
-//    private String mark;
-    private Long price;
-    private String description;
-//    private String color
-    private Long mileage;
-    private String auto_status;
-//    private String petrol_type;
-    private int engine_capacity;
-    private int power;
 
-
-
-    // mark
     @OneToOne
-    @JoinColumn(name = "mark_id", referencedColumnName = "markID")
+    @JoinColumn(name = "mark_id", referencedColumnName = "id")
     private AutoProducent mark;
 
-    //color
+    @Column(name = "price")
+    private Long price;
+
+    @Column(name = "description")
+    private String description;
+
     @OneToOne
-    @JoinColumn(name = "color_id", referencedColumnName = "colorID")
+    @JoinColumn(name = "color_id", referencedColumnName = "id")
     private Color color;
 
-    //petrol_type
+    @Column(name = "mileage")
+    private Long mileage;
+
+    @Column(name = "auto_status")
+    private String auto_status;
+
     @OneToOne
-    @JoinColumn(name = "petrol_type_id", referencedColumnName = "petrolID")
+    @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
     private Petrol petrolType;
 
+    @Column(name = "engine_capacity")
+    private int engine_capacity;
 
+    @Column(name = "power")
+    private int power;
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public Long getPrice() {
-        return price;
-    }
-    public void setPrice(Long price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getMileage() {
-        return mileage;
-    }
-    public void setMileage(Long mileage) {
-        this.mileage = mileage;
-    }
-    public String getAuto_status() {
-        return auto_status;
-    }
-    public void setAuto_status(String auto_status) {
-        this.auto_status = auto_status;
-    }
-    public int getEngine_capacity() {
-        return engine_capacity;
-    }
-    public void setEngine_capacity(int engine_capacity) {
-        this.engine_capacity = engine_capacity;
-    }
-    public int getPower() {
-        return power;
-    }
-
-    public void setPower(int power) {
-        this.power = power;
-    }
-    public AutoProducent getMark() {
-        return mark;
-    }
-
-    public void setMark(AutoProducent mark) {
-        this.mark = mark;
-    }
-    public Color getColor() {
-        return color;
-    }
-    public void setColor(Color color) {
-        this.color = color;
-    }
-    public Petrol getPetrolType() {
-        return petrolType;
-    }
-    public void setPetrolType(Petrol petrolType) {
-        this.petrolType = petrolType;
-    }
-
-
-
-
-
-
-
-
-
+    @Column(name = "state")
+    @Convert(converter = AutoStateConverter.class)
+    private String state;
 
 }
