@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: carshopdb
     ports:
-      - "5434:5434"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -21,22 +21,25 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin123
     ports:
-      - "5433:80"
+      - "5050:80"
     depends_on:
       - postgres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
+  flyway:
+    image: flyway/flyway:latest
+    container_name: flyway
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/carshopdb
+      FLYWAY_USER: admin
+      FLYWAY_PASSWORD: admin123
+    depends_on:
+      - postgres
+    entrypoint: ["flyway", "migrate"]
+    volumes:
+      - ./sql_migrations:/flyway/sql
+
 volumes:
   postgres_data:
   pgadmin_data:
-
-
-
-
-# START DOCKER
-# docker-compose up --build or docker-compose up -d
-
-#STOP DOCKER
-#docker-compose down
-
