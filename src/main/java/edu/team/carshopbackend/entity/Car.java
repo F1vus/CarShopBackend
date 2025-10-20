@@ -39,8 +39,8 @@ public class Car {
     private Long mileage;
 
     @Column(name = "car_status")
-    @Convert(converter = AutoStateConverter.class)
-    private AutoState car_status;
+    @Convert(converter = CarStateConverter.class)
+    private CarState car_status;
 
     @ManyToOne
     @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
