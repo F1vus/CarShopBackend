@@ -19,7 +19,7 @@ public class CarMapper {
                 .description(car.getDescription())
                 .color(car.getColor().getName())
                 .mileage(car.getMileage())
-                .state(car.getAuto_status())
+                .state(car.getCar_status())
                 .petrolType(car.getPetrolType().getName())
                 .engineCapacity(car.getEngine_capacity())
                 .power(car.getPower())
