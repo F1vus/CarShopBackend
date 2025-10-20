@@ -1,12 +1,9 @@
 package edu.team.carshopbackend.entity;
 
-import edu.team.carshopbackend.entity.enums.AutoState;
-import edu.team.carshopbackend.entity.enums.converter.AutoStateConverter;
+import edu.team.carshopbackend.entity.enums.CarState;
+import edu.team.carshopbackend.entity.enums.converter.CarStateConverter;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
