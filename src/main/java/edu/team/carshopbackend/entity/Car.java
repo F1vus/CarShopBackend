@@ -47,13 +47,13 @@ public class Car {
     private Petrol petrolType;
 
     @Column(name = "engine_capacity")
-    private int engine_capacity;
+    private Integer engine_capacity;
 
     @Column(name = "power")
-    private int power;
+    private Integer power;
 
     @Column(name = "year")
-    private int year;
+    private Integer year;
 
     @Column(name = "image_url", columnDefinition = "text")
     private String imageUrl;
