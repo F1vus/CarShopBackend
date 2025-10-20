@@ -10,12 +10,12 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "autos")
+@Table(name = "cars")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Auto {
+public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +24,9 @@ public class Auto {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "mark_id", referencedColumnName = "id")
-    private AutoProducent mark;
+    private CarProducent mark;
 
     @Column(name = "price")
     private Long price;
@@ -34,17 +34,18 @@ public class Auto {
     @Column(name = "description")
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "color_id", referencedColumnName = "id")
     private Color color;
 
     @Column(name = "mileage")
     private Long mileage;
 
-    @Column(name = "auto_status")
-    private String auto_status;
+    @Column(name = "car_status")
+    @Convert(converter = AutoStateConverter.class)
+    private AutoState car_status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
     private Petrol petrolType;
 
@@ -54,8 +55,10 @@ public class Auto {
     @Column(name = "power")
     private int power;
 
-    @Column(name = "state")
-    @Convert(converter = AutoStateConverter.class)
-    private AutoState state;
+    @Column(name = "year")
+    private int year;
+
+    @Column(name = "image_url", columnDefinition = "text")
+    private String imageUrl;
 
 }

@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: carshopdb
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -26,19 +26,6 @@ services:
       - postgres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-
-  flyway:
-    image: flyway/flyway:latest
-    container_name: flyway
-    environment:
-      FLYWAY_URL: jdbc:postgresql://postgres:5432/carshopdb
-      FLYWAY_USER: admin
-      FLYWAY_PASSWORD: admin123
-    depends_on:
-      - postgres
-    entrypoint: ["flyway", "migrate"]
-    volumes:
-      - ./sql_migrations:/flyway/sql
 
 volumes:
   postgres_data:
