@@ -21,7 +21,7 @@ public class Car {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "mark_id", referencedColumnName = "id")
     private CarProducent mark;
 
@@ -31,7 +31,7 @@ public class Car {
     @Column(name = "description")
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "color_id", referencedColumnName = "id")
     private Color color;
 
@@ -39,10 +39,10 @@ public class Car {
     private Long mileage;
 
     @Column(name = "car_status")
-    @Convert(converter = CarStateConverter.class)
-    private CarState auto_status;
+    @Convert(converter = AutoStateConverter.class)
+    private AutoState car_status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
     private Petrol petrolType;
 
