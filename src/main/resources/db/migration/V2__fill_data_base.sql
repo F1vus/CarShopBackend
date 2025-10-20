@@ -1,4 +1,4 @@
--- V1__fill_data_base.sql
+-- V2__fill_data_base.sql
 BEGIN;
 
 -- ===== INSERT PRODUCERS =====
