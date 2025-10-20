@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="auto_producent")
+@Table(name="car_producent")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AutoProducent {
+public class CarProducent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long markID;
 
-    @Column(name = "auto_produces")
+    @Column(name = "name")
     private String name;
 
 }
