@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/")
 public class ApiController {
 
-    @GetMapping("hello_world")
-    public String helloWorld() {
-        return "Hello World!";
+    @GetMapping("ping")
+    public String pingPong() {
+        return "pong";
     }
 
     @PostMapping("test_post/{id}")

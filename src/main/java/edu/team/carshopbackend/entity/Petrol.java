@@ -19,6 +19,6 @@ public class Petrol {
     @Column(name = "id")
     private Long petrolID;
 
-    @Column(name = "auto_petrol")
+    @Column(name = "name")
     private String name;
 }

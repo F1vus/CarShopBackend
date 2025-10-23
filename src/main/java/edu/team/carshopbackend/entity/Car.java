@@ -1,21 +1,18 @@
 package edu.team.carshopbackend.entity;
 
-import edu.team.carshopbackend.entity.enums.AutoState;
-import edu.team.carshopbackend.entity.enums.converter.AutoStateConverter;
+import edu.team.carshopbackend.entity.enums.CarState;
+import edu.team.carshopbackend.entity.enums.converter.CarStateConverter;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
-@Table(name = "autos")
+@Table(name = "cars")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Auto {
+public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +21,9 @@ public class Auto {
     @Column(name = "name")
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "mark_id", referencedColumnName = "id")
-    private AutoProducent mark;
+    private CarProducent mark;
 
     @Column(name = "price")
     private Long price;
@@ -34,28 +31,31 @@ public class Auto {
     @Column(name = "description")
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "color_id", referencedColumnName = "id")
     private Color color;
 
     @Column(name = "mileage")
     private Long mileage;
 
-    @Column(name = "auto_status")
-    private String auto_status;
+    @Column(name = "car_status")
+    @Convert(converter = CarStateConverter.class)
+    private CarState car_status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
     private Petrol petrolType;
 
     @Column(name = "engine_capacity")
-    private int engine_capacity;
+    private Integer engine_capacity;
 
     @Column(name = "power")
-    private int power;
+    private Integer power;
 
-    @Column(name = "state")
-    @Convert(converter = AutoStateConverter.class)
-    private AutoState state;
+    @Column(name = "year")
+    private Integer year;
+
+    @Column(name = "image_url", columnDefinition = "text")
+    private String imageUrl;
 
 }
