@@ -19,6 +19,6 @@ public class Color {
     @Column(name = "id")
     private Long colorID;
 
-    @Column(name = "auto_colors")
+    @Column(name = "name")
     private String name;
 }

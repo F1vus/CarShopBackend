@@ -1,10 +1,10 @@
 package edu.team.carshopbackend.repository;
 
 
-import edu.team.carshopbackend.entity.Auto;
+import edu.team.carshopbackend.entity.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AutoRepository extends JpaRepository<Auto, Long> {
+public interface CarRepository extends JpaRepository<Car, Long> {
 }
