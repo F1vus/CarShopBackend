@@ -8,7 +8,7 @@ public class ApiController {
 
     @GetMapping("ping")
     public String pingPong() {
-        return "pong";
+        return "pong!";
     }
 
     @PostMapping("test_post/{id}")
