@@ -31,7 +31,7 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Build with Maven
-      run: mvn -B clean package -DskipTests
+      run: mvn -B clean package -DskipTests -Dspring-boot.run.profiles=prod
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
