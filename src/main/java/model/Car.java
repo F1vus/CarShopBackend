@@ -1,8 +1,16 @@
 package model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Schema(description = "Reprezentuje samochód w systemie")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Car {
 
     @Schema(description = "Unikalne ID samochodu", example = "1")
@@ -16,43 +24,4 @@ public class Car {
 
     @Schema(description = "Rok produkcji samochodu", example = "2023")
     private int year;
-
-    public Car(Long id, String brand, String model, int year) {
-        this.id = id;
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
 }
