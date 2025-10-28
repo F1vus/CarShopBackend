@@ -15,26 +15,49 @@ public class CarService {
 
     @Autowired
     public CarService(CarRepository carRepository) {
+
         this.carRepository = carRepository;
     }
 
-    public Car createProduct(Car car) {
+    public Car createCars(Car car) {
+
         return carRepository.save(car);
     }
 
-    public List<Car> getAllProducts() {
+    public List<Car> getAllCars() {
+
         return carRepository.findAll();
     }
 
-    public Optional<Car> getProductById(Long id) {
+    public Optional<Car> getCarsById(Long id) {
+
         return carRepository.findById(id);
     }
 
-    public Car updateProduct(Car car) {return carRepository.save(car); }
+    public Car CarUpdate(Long id, Car car) {
+        car.setId(id);
 
-    public void deleteAllData() {carRepository.deleteAll(); }
+        return carRepository.findById(id).map(existingCar -> {
+            Optional.ofNullable(car.getName()).ifPresent(existingCar::setName);
+            Optional.ofNullable(car.getPrice()).ifPresent(existingCar::setPrice);
+            Optional.ofNullable(car.getDescription()).ifPresent(existingCar::setDescription);
+            Optional.ofNullable(car.getMileage()).ifPresent(existingCar::setMileage);
+            Optional.ofNullable(car.getCar_status()).ifPresent(existingCar::setCar_status);
+            Optional.ofNullable(car.getEngine_capacity()).ifPresent(existingCar::setEngine_capacity);
+            Optional.ofNullable(car.getPower()).ifPresent(existingCar::setPower);
+            Optional.ofNullable(car.getYear()).ifPresent(existingCar::setYear);
+            return carRepository.save(existingCar);
+        }).orElseThrow(() -> new RuntimeException("Car does not exist with id " + id));
+    }
 
-    public void deleteCarById(Long id) {carRepository.deleteById(id); }
+    public boolean isExists(Long id) {
+        return carRepository.existsById(id);
+    }
+
+//    public void deleteAllCars() {carRepository.deleteAll(); }
+
+    public void deleteCarById(Long id) {
+        carRepository.deleteById(id); }
 
 
 

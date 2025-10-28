@@ -19,56 +19,51 @@ public class CarController {
         this.carService = carService;
     }
 
-    @PostMapping("/c")
+    @PostMapping("/createCar")
     public CarDTO createCar(@RequestBody CarDTO carDTO) {
-       Car savedCar = carService.createProduct(CarMapper.mapToEntity(carDTO));
+       Car savedCar = carService.createCars(CarMapper.mapToEntity(carDTO));
        return CarMapper.mapToDTO(savedCar);
     }
 
 
     @GetMapping("/cars")
     public List<CarDTO> findAllAutos() {
-        return carService.getAllProducts().stream()
+        return carService.getAllCars().stream()
                 .map(CarMapper::mapToDTO)
                 .toList();
     }
 
     @GetMapping("/cars/{id}")
     public CarDTO findAutoById(@PathVariable Long id) {
-        Car car = carService.getProductById(id)
+        Car car = carService.getCarsById(id)
                 .orElseThrow(() -> new RuntimeException("Car not found with id " + id));
         return CarMapper.mapToDTO(car);
     }
 
 
-    @PatchMapping("/changeCarAdress/{id}")
+    @PatchMapping("/cars/{id}")
     public CarDTO updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
-        Car existingCar = carService.getProductById(id)
-                .orElseThrow(() -> new RuntimeException("Car not found with id " + id));
+        if (!carService.isExists(id)) {
+            throw new RuntimeException("Car not found with id " + id);
+        }
 
-        if (carDTO.getName() != null) existingCar.setName(carDTO.getName());
-        if (carDTO.getPrice() != null) existingCar.setPrice(carDTO.getPrice());
-        if (carDTO.getDescription() != null) existingCar.setDescription(carDTO.getDescription());
-        if(carDTO.getMileage() != null) existingCar.setMileage(carDTO.getMileage());
-        if(carDTO.getState()!= null) existingCar.setCar_status(carDTO.getState());
-        if(carDTO.getEngineCapacity() != null) existingCar.setEngine_capacity(carDTO.getEngineCapacity());
-        if(carDTO.getPower() != null) existingCar.setPower(carDTO.getPower());
-        if(carDTO.getYear() != null) existingCar.setYear(carDTO.getYear());
-        if(carDTO.getId() != null) existingCar.setId(carDTO.getId());
-
-        Car savedCar = carService.updateProduct(existingCar);
-        return CarMapper.mapToDTO(savedCar);
+        Car carEntity = CarMapper.mapToEntity(carDTO);
+        Car updatedCar = carService.CarUpdate(id, carEntity);
+        return CarMapper.mapToDTO(updatedCar);
     }
 
-    @DeleteMapping("/delete/{id}")
+
+
+
+    @DeleteMapping("/cars/{id}")
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCarById(id);
     }
 
-    @DeleteMapping("/delete")
-    public void deleteAllCars() {
-        carService.deleteAllData();
-    }
+//    @DeleteMapping("/delete")
+//    public void deleteAllCars() {
+//        carService.deleteAllData();
+//    }
 
 
 
