@@ -12,6 +12,7 @@ public class CarDTO {
     private Long price;
     private String description;
     private String color;
+    private String mark;
     private Long mileage;
     private CarState state;
     private String petrolType;

@@ -16,6 +16,7 @@ public class CarMapper {
                 .id(car.getId())
                 .name(car.getName())
                 .price(car.getPrice())
+                .mark(car.getMark() != null ? car.getMark().getName() : null)
                 .description(car.getDescription())
                 .color(car.getColor() != null ? car.getColor().getName() : null)
                 .mileage(car.getMileage())

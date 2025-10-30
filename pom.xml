@@ -7,23 +7,12 @@
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.5.6</version>
     <relativePath/>
-</parent>
-<groupId>edu.team</groupId>
-<artifactId>CarShopBackend</artifactId>
-<version>0.0.1-SNAPSHOT</version>
-<name>CarShopBackend</name>
-<description>CarShopBackend</description>
-<url/>
-<licenses>
-    <license/>
-</licenses>
-<developers>
-    <developer/>
-</developers>
-<scm>
-    <connection/>
-    <developerConnection/>
-    <tag/>
+    </parent>
+    <groupId>edu.team</groupId>
+    <artifactId>CarShopBackend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>CarShopBackend</name>
+    <description>CarShopBackend</description>
     <url/>
     <licenses>
         <license/>
@@ -60,16 +49,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
@@ -80,11 +59,6 @@
             <version>9.22.3</version>
         </dependency>
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -93,6 +67,11 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
         </dependency>
 
     </dependencies>
@@ -108,7 +87,6 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>1.18.40</version>
-                            <scope>provided</scope>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
