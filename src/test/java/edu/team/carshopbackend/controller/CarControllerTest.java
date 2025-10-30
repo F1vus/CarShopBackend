@@ -55,7 +55,6 @@ class CarControllerTest {
 
     @Test
     void shouldReturnErrorWhenCarNotFound() throws Exception {
-        // ustawiamy zachowanie mocka
         Mockito.when(carService.getProductById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/v1/cars/999")
