@@ -15,11 +15,11 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain configure(final HttpSecurity security) throws Exception
     {
-       return security.csrf(AbstractHttpConfigurer::disable).cors(
-               httpSecurityCorsConfigurer ->
-                       httpSecurityCorsConfigurer.configurationSource(request ->
-                               new CorsConfiguration().applyPermitDefaultValues())
+        return security.csrf(AbstractHttpConfigurer::disable).cors(
+                httpSecurityCorsConfigurer ->
+                        httpSecurityCorsConfigurer.configurationSource(request ->
+                                new CorsConfiguration().applyPermitDefaultValues())
 
-       ).build();
+        ).build();
     }
 }
