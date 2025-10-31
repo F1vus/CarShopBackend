@@ -11,12 +11,13 @@ public class CarDTO {
     private String name;
     private Long price;
     private String description;
-    private String color;
+    private ColorDTO color;
     private Long mileage;
     private CarState state;
-    private String petrolType;
+    private PetrolDTO petrolType;
     private Integer engineCapacity;
     private Integer power;
     private Integer year;
     private String imageUrl;
+    private CarProducentDTO producent;
 }
