@@ -23,7 +23,7 @@ public class Car {
 
     @ManyToOne
     @JoinColumn(name = "mark_id", referencedColumnName = "id")
-    private CarProducent mark;
+    private CarProducent producent;
 
     @Column(name = "price")
     private Long price;
