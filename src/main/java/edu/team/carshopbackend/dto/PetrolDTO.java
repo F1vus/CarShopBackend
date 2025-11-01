@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
-
 public class PetrolDTO {
     private Long id;
     private String name;
