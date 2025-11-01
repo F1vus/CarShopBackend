@@ -1,5 +1,6 @@
 package edu.team.carshopbackend.controller;
 
+import edu.team.carshopbackend.config.jwtConfig.JwtCore;
 import edu.team.carshopbackend.service.CarService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +25,9 @@ class CarControllerTest {
 
     @MockitoBean
     private CarService carService;
+
+    @MockitoBean
+    private JwtCore jwtCore;
 
 //    @Test
 //    void shouldReturnListOfCars() throws Exception {

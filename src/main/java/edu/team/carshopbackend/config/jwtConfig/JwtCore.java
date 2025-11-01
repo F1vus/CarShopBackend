@@ -46,7 +46,6 @@ public class JwtCore {
     }
 
     public String getNameFromToken(final String token) {
-        System.out.println();
         return extractAllClaims(token).getSubject();
     }
 }
