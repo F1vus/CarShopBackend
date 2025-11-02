@@ -52,7 +52,7 @@ public class Car {
     @Column(name = "power")
     private Integer power;
 
-    @Column(name = "year")
+    @Column(name = "manufacture_year")
     private Integer year;
 
     @Column(name = "image_url", columnDefinition = "text")
