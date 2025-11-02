@@ -6,6 +6,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class CarDTO {
     private Long id;
     private String name;
@@ -13,7 +14,7 @@ public class CarDTO {
     private String description;
     private ColorDTO color;
     private Long mileage;
-    private CarState state;
+    private CarState carState;
     private PetrolDTO petrolType;
     private Integer engineCapacity;
     private Integer power;

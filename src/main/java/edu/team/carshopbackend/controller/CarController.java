@@ -2,7 +2,7 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
-import edu.team.carshopbackend.mapper.CarMapper;
+import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +21,18 @@ import java.util.Optional;
 public class CarController {
 
     private final CarService carService;
+    private final CarMapper carMapper;
 
-    public CarController(CarService carService) {
+    public CarController(CarService carService, CarMapper carMapper) {
         this.carService = carService;
+        this.carMapper = carMapper;
     }
 
     @GetMapping("/cars")
     @Operation(summary = "Pobiera listę wszystkich samochodów")
     public List<CarDTO> findAllAutos() {
         return carService.getAllProducts().stream()
-                .map(CarMapper::mapToDTO)
+                .map(carMapper::mapTo)
                 .toList();
     }
 
@@ -39,7 +41,7 @@ public class CarController {
     public ResponseEntity<CarDTO> findAutoById(@PathVariable Long id) {
         Optional<Car> car = carService.getProductById(id);
         if(car.isPresent()) {
-            return ResponseEntity.ok().body(CarMapper.mapToDTO(car.get()));
+            return ResponseEntity.ok().body(carMapper.mapTo(car.get()));
         } else {
             return ResponseEntity.notFound().build();
         }

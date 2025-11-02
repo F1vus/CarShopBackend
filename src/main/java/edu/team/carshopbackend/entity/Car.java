@@ -40,14 +40,14 @@ public class Car {
 
     @Column(name = "car_status")
     @Convert(converter = CarStateConverter.class)
-    private CarState car_status;
+    private CarState carState;
 
     @ManyToOne
     @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
     private Petrol petrolType;
 
     @Column(name = "engine_capacity")
-    private Integer engine_capacity;
+    private Integer engineCapacity;
 
     @Column(name = "power")
     private Integer power;
