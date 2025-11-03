@@ -4,6 +4,7 @@ import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,16 +18,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 @Tag(name = "Car Controller", description = "Zarządza samochodami w systemie")
 public class CarController {
 
     private final CarService carService;
     private final CarMapper carMapper;
-
-    public CarController(CarService carService, CarMapper carMapper) {
-        this.carService = carService;
-        this.carMapper = carMapper;
-    }
 
     @GetMapping("/cars")
     @Operation(summary = "Pobiera listę wszystkich samochodów")
