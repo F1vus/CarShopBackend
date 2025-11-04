@@ -38,8 +38,8 @@ public class CarService {
             Optional.ofNullable(car.getPrice()).ifPresent(existingCar::setPrice);
             Optional.ofNullable(car.getDescription()).ifPresent(existingCar::setDescription);
             Optional.ofNullable(car.getMileage()).ifPresent(existingCar::setMileage);
-            Optional.ofNullable(car.getCar_status()).ifPresent(existingCar::setCar_status);
-            Optional.ofNullable(car.getEngine_capacity()).ifPresent(existingCar::setEngine_capacity);
+            Optional.ofNullable(car.getCarState()).ifPresent(existingCar::setCarState);
+            Optional.ofNullable(car.getEngineCapacity()).ifPresent(existingCar::setEngineCapacity);
             Optional.ofNullable(car.getPower()).ifPresent(existingCar::setPower);
             Optional.ofNullable(car.getYear()).ifPresent(existingCar::setYear);
             return carRepository.save(existingCar);
