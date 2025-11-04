@@ -23,7 +23,7 @@ public class Car {
 
     @ManyToOne
     @JoinColumn(name = "mark_id", referencedColumnName = "id")
-    private CarProducent mark;
+    private CarProducent producent;
 
     @Column(name = "price")
     private Long price;
@@ -40,19 +40,19 @@ public class Car {
 
     @Column(name = "car_status")
     @Convert(converter = CarStateConverter.class)
-    private CarState car_status;
+    private CarState carState;
 
     @ManyToOne
     @JoinColumn(name = "petrol_type_id", referencedColumnName = "id")
     private Petrol petrolType;
 
     @Column(name = "engine_capacity")
-    private Integer engine_capacity;
+    private Integer engineCapacity;
 
     @Column(name = "power")
     private Integer power;
 
-    @Column(name = "year")
+    @Column(name = "manufacture_year")
     private Integer year;
 
     @Column(name = "image_url", columnDefinition = "text")
