@@ -16,3 +16,4 @@ public class CarStateConverter implements AttributeConverter<CarState, String> {
         return dbData == null ? null : CarState.fromString(dbData);
     }
 }
+

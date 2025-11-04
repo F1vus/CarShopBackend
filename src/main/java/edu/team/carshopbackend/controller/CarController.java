@@ -25,6 +25,13 @@ public class CarController {
     private final CarService carService;
     private final CarMapper carMapper;
 
+    @PostMapping("/createCar")
+    public CarDTO createCar(@RequestBody CarDTO carDTO) {
+       Car savedCar = carService.createProduct(carMapper.mapFrom(carDTO)));
+       return carMapper.mapTo(savedCar);
+    }
+
+
     @GetMapping("/cars")
     @Operation(summary = "Pobiera listę wszystkich samochodów")
     public List<CarDTO> findAllAutos() {
@@ -42,6 +49,22 @@ public class CarController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PatchMapping("/cars/{id}")
+    public CarDTO updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
+        if (!carService.isExists(id)) {
+            throw new RuntimeException("Car not found with id " + id);
+        }
+
+        Car carEntity = carMapper.mapFrom(carDTO);
+        Car updatedCar = carService.carUpdate(id, carEntity);
+        return carMapper.mapTo(updatedCar);
+    }
+
+    @DeleteMapping("/cars/{id}")
+    public void deleteCar(@PathVariable Long id) {
+        carService.deleteCarById(id);
     }
 
 }
