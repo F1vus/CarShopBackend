@@ -54,14 +54,7 @@ public class CarService {
         return carRepository.existsById(id);
     }
 
-//    public void deleteAllCars() {carRepository.deleteAll(); }
-
     public void deleteCarById(Long id) {
-        carRepository.deleteById(id); }
-
-
-
-// fixed
-
-
+        carRepository.deleteById(id);
+    }
 }

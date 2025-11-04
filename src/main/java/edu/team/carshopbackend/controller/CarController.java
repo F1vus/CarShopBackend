@@ -40,7 +40,6 @@ public class CarController {
         return CarMapper.mapToDTO(car);
     }
 
-
     @PatchMapping("/cars/{id}")
     public CarDTO updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
         if (!carService.isExists(id)) {
@@ -52,23 +51,9 @@ public class CarController {
         return CarMapper.mapToDTO(updatedCar);
     }
 
-
-
-
     @DeleteMapping("/cars/{id}")
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCarById(id);
     }
-
-//    @DeleteMapping("/delete")
-//    public void deleteAllCars() {
-//        carService.deleteAllData();
-//    }
-
-
-
-// fixet controllers
-
-
 
 }
