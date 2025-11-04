@@ -4,18 +4,11 @@ import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,23 +22,32 @@ public class CarController {
     private final CarService carService;
     private final CarMapper carMapper;
 
+    @Operation(
+            summary = "Tworzy nowy samochód",
+            description = "Dodaje nowy samochód do systemu i zwraca jego szczegóły"
+    )
     @PostMapping("/cars")
     public CarDTO createCar(@RequestBody CarDTO carDTO) {
-       Car savedCar = carService.createProduct(carMapper.mapFrom(carDTO));
-       return carMapper.mapTo(savedCar);
+        Car savedCar = carService.createProduct(carMapper.mapFrom(carDTO));
+        return carMapper.mapTo(savedCar);
     }
 
-
+    @Operation(
+            summary = "Pobiera listę wszystkich samochodów",
+            description = "Zwraca wszystkie samochody w systemie jako lista CarDTO"
+    )
     @GetMapping("/cars")
-    @Operation(summary = "Pobiera listę wszystkich samochodów")
     public List<CarDTO> findAllAutos() {
         return carService.getAllProducts().stream()
                 .map(carMapper::mapTo)
                 .toList();
     }
 
+    @Operation(
+            summary = "Pobiera samochód po ID",
+            description = "Zwraca samochód o podanym ID lub 404 jeśli nie istnieje"
+    )
     @GetMapping("/cars/{id}")
-    @Operation(summary = "Pobiera samochód po ID")
     public ResponseEntity<CarDTO> findAutoById(@PathVariable Long id) {
         Optional<Car> car = carService.getProductById(id);
         if(car.isPresent()) {
@@ -55,6 +57,10 @@ public class CarController {
         }
     }
 
+    @Operation(
+            summary = "Aktualizuje dane samochodu",
+            description = "Modyfikuje istniejący samochód o podanym ID i zwraca zaktualizowane dane"
+    )
     @PatchMapping("/cars/{id}")
     public CarDTO updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
         if (!carService.isExists(id)) {
@@ -67,10 +73,13 @@ public class CarController {
         return carMapper.mapTo(updatedCar);
     }
 
+    @Operation(
+            summary = "Usuwa samochód",
+            description = "Usuwa samochód o podanym ID z systemu"
+    )
     @DeleteMapping("/cars/{id}")
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCarById(id);
     }
 
 }
-
