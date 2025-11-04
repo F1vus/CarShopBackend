@@ -15,26 +15,22 @@ public class CarService {
 
     @Autowired
     public CarService(CarRepository carRepository) {
-
         this.carRepository = carRepository;
     }
 
-    public Car createCars(Car car) {
-
+    public Car createProduct(Car car) {
         return carRepository.save(car);
     }
 
-    public List<Car> getAllCars() {
-
+    public List<Car> getAllProducts() {
         return carRepository.findAll();
     }
 
-    public Optional<Car> getCarsById(Long id) {
-
+    public Optional<Car> getProductById(Long id) {
         return carRepository.findById(id);
     }
 
-    public Car CarUpdate(Long id, Car car) {
+    public Car carUpdate(Long id, Car car) {
         car.setId(id);
 
         return carRepository.findById(id).map(existingCar -> {
