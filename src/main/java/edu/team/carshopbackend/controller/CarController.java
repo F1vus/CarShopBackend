@@ -6,14 +6,7 @@ import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -30,14 +23,14 @@ public class CarController {
     private final CarMapper carMapper;
 
     @PostMapping("/cars")
+    @Operation(summary = "Tworzy nowy samochód", description = "Tworzy nowy samochód w systemie na podstawie przesłanych danych DTO i zwraca utworzony obiekt.")
     public CarDTO createCar(@RequestBody CarDTO carDTO) {
-       Car savedCar = carService.createProduct(carMapper.mapFrom(carDTO));
-       return carMapper.mapTo(savedCar);
+        Car savedCar = carService.createProduct(carMapper.mapFrom(carDTO));
+        return carMapper.mapTo(savedCar);
     }
 
-
     @GetMapping("/cars")
-    @Operation(summary = "Pobiera listę wszystkich samochodów")
+    @Operation(summary = "Pobiera listę wszystkich samochodów", description = "Zwraca listę wszystkich samochodów zapisanych w systemie.")
     public List<CarDTO> findAllAutos() {
         return carService.getAllProducts().stream()
                 .map(carMapper::mapTo)
@@ -45,7 +38,7 @@ public class CarController {
     }
 
     @GetMapping("/cars/{id}")
-    @Operation(summary = "Pobiera samochód po ID")
+    @Operation(summary = "Pobiera samochód po ID", description = "Zwraca samochód o podanym ID, jeśli istnieje. Jeśli samochód nie istnieje, zwraca status 404.")
     public ResponseEntity<CarDTO> findAutoById(@PathVariable Long id) {
         Optional<Car> car = carService.getProductById(id);
         if(car.isPresent()) {
@@ -56,6 +49,7 @@ public class CarController {
     }
 
     @PatchMapping("/cars/{id}")
+    @Operation(summary = "Aktualizuje samochód", description = "Aktualizuje istniejący samochód o podanym ID. Zwraca zaktualizowany obiekt lub rzuca wyjątek jeśli samochód nie istnieje.")
     public CarDTO updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
         if (!carService.isExists(id)) {
             throw new RuntimeException("Car not found with id " + id);
@@ -68,9 +62,8 @@ public class CarController {
     }
 
     @DeleteMapping("/cars/{id}")
+    @Operation(summary = "Usuwa samochód", description = "Usuwa samochód o podanym ID z systemu.")
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCarById(id);
     }
-
 }
-
