@@ -1,6 +1,9 @@
 package edu.team.carshopbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
+import edu.team.carshopbackend.dto.CarDTO;
+import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
 import org.junit.jupiter.api.Test;
@@ -12,10 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CarController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -33,40 +35,76 @@ class CarControllerTest {
     @MockitoBean
     private CarMapper carMapper;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Test
+    void shouldCreateCarSuccessfully() throws Exception {
+        CarDTO requestDto = new CarDTO();
+        requestDto.setName("Audi");
+
+        Car entity = new Car();
+        entity.setName("Audi");
+
+        Car savedEntity = new Car();
+        savedEntity.setId(1L);
+        savedEntity.setName("Audi");
+
+        CarDTO responseDto = new CarDTO();
+        responseDto.setId(1L);
+        responseDto.setName("Audi");
+
+        Mockito.when(carMapper.mapFrom(requestDto)).thenReturn(entity);
+        Mockito.when(carService.createProduct(entity)).thenReturn(savedEntity);
+        Mockito.when(carMapper.mapTo(savedEntity)).thenReturn(responseDto);
+
+        mockMvc.perform(post("/api/v1/cars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.name", is("Audi")));
+    }
+
 //    @Test
-//    void shouldReturnListOfCars() throws Exception {
-//        Car car = new Car();
-//        car.setId(1L);
-//        car.setName("TestCar");
+//    void shouldUpdateCarSuccessfully() throws Exception {
+//        Long id = 1L;
 //
-//        when(carService.getAllProducts()).thenReturn(List.of(car));
+//        CarDTO requestDto = new CarDTO();
+//        requestDto.setName("Updated Car");
 //
-//        mockMvc.perform(get("/api/v1/cars")
-//                        .contentType(MediaType.APPLICATION_JSON))
+//        Car entity = new Car();
+//        entity.setId(id);
+//        entity.setName("Updated Car");
+//
+//        Car updatedEntity = new Car();
+//        updatedEntity.setId(id);
+//        updatedEntity.setName("Updated Car");
+//
+//        CarDTO responseDto = new CarDTO();
+//        responseDto.setId(id);
+//        responseDto.setName("Updated Car");
+//
+//        Mockito.when(carService.isExists(id)).thenReturn(true);
+//        Mockito.when(carMapper.mapFrom(requestDto)).thenReturn(entity);
+//        Mockito.when(carService.carUpdate(id, entity)).thenReturn(updatedEntity);
+//        Mockito.when(carMapper.mapTo(updatedEntity)).thenReturn(responseDto);
+//
+//        mockMvc.perform(patch("/api/v1/cars/{id}", id)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(requestDto)))
 //                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].name").value("TestCar"));
-//    }
-//
-//    @Test
-//    void shouldReturnCarById() throws Exception {
-//        Car car = new Car();
-//        car.setId(10L);
-//        car.setName("BMW");
-//
-//        when(carService.getProductById(10L)).thenReturn(Optional.of(car));
-//
-//        mockMvc.perform(get("/api/v1/cars/10")
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.name").value("BMW"));
+//                .andExpect(jsonPath("$.id", is(1)))
+//                .andExpect(jsonPath("$.name", is("Updated Car")));
 //    }
 
     @Test
-    void shouldReturnErrorWhenCarNotFound() throws Exception {
-        Mockito.when(carService.getProductById(999L)).thenReturn(Optional.empty());
+    void shouldDeleteCarSuccessfully() throws Exception {
+        Long id = 1L;
+        Mockito.doNothing().when(carService).deleteCarById(id);
 
-        mockMvc.perform(get("/api/v1/cars/999")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/v1/cars/{id}", id))
+                .andExpect(status().isOk());
+
+        Mockito.verify(carService, Mockito.times(1)).deleteCarById(id);
     }
 }

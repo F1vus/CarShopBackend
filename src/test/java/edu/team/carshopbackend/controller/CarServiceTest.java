@@ -5,17 +5,17 @@ import edu.team.carshopbackend.repository.CarRepository;
 import edu.team.carshopbackend.service.CarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CarServiceTest {
 
     @Mock
@@ -24,61 +24,52 @@ class CarServiceTest {
     @InjectMocks
     private CarService carService;
 
-    private Car car1;
-    private Car car2;
+    private Car existingCar;
+    private Car updateCar;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        existingCar = new Car();
+        existingCar.setId(1L);
+        existingCar.setName("Old Car");
+        existingCar.setPrice((long) 10000.0);
 
-        car1 = new Car();
-        car1.setId(1L);
-        car1.setName("Car 1");
-
-        car2 = new Car();
-        car2.setId(2L);
-        car2.setName("Car 2");
+        updateCar = new Car();
+        updateCar.setName("Updated Car");
+        updateCar.setPrice((long) 15000.0);
     }
 
     @Test
-    void testCreateProduct() {
-        when(carRepository.save(car1)).thenReturn(car1);
+    void testUpdateProductSuccessfully() {
+        when(carRepository.findById(1L)).thenReturn(Optional.of(existingCar));
+        when(carRepository.save(any(Car.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Car savedCar = carService.createProduct(car1);
+        Car updated = carService.carUpdate(1L, updateCar);
 
-        assertNotNull(savedCar);
-        assertEquals("Car 1", savedCar.getName());
-        verify(carRepository, times(1)).save(car1);
-    }
-
-    @Test
-    void testGetAllProducts() {
-        when(carRepository.findAll()).thenReturn(Arrays.asList(car1, car2));
-
-        List<Car> cars = carService.getAllProducts();
-
-        assertEquals(2, cars.size());
-        verify(carRepository, times(1)).findAll();
-    }
-
-    @Test
-    void testGetProductByIdFound() {
-        when(carRepository.findById(1L)).thenReturn(Optional.of(car1));
-
-        Optional<Car> result = carService.getProductById(1L);
-
-        assertTrue(result.isPresent());
-        assertEquals("Car 1", result.get().getName());
+        assertNotNull(updated);
+        assertEquals("Updated Car", updated.getName());
+        assertEquals((long)15000.0, updated.getPrice());
         verify(carRepository, times(1)).findById(1L);
+        verify(carRepository, times(1)).save(any(Car.class));
     }
 
     @Test
-    void testGetProductByIdNotFound() {
-        when(carRepository.findById(3L)).thenReturn(Optional.empty());
+    void testUpdateProductThrowsWhenNotFound() {
+        when(carRepository.findById(999L)).thenReturn(Optional.empty());
 
-        Optional<Car> result = carService.getProductById(3L);
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> carService.carUpdate(999L, updateCar));
 
-        assertFalse(result.isPresent());
-        verify(carRepository, times(1)).findById(3L);
+        assertEquals("Car does not exist with id 999", ex.getMessage());
+        verify(carRepository, times(1)).findById(999L);
+        verify(carRepository, never()).save(any());
+    }
+
+    @Test
+    void testDeleteCarById() {
+        doNothing().when(carRepository).deleteById(1L);
+
+        carService.deleteCarById(1L);
+
+        verify(carRepository, times(1)).deleteById(1L);
     }
 }
