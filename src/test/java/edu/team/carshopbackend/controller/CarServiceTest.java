@@ -5,15 +5,17 @@ import edu.team.carshopbackend.repository.CarRepository;
 import edu.team.carshopbackend.service.CarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CarServiceTest {
 
     @Mock
@@ -27,8 +29,6 @@ class CarServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
         existingCar = new Car();
         existingCar.setId(1L);
         existingCar.setName("Old Car");
@@ -48,7 +48,7 @@ class CarServiceTest {
 
         assertNotNull(updated);
         assertEquals("Updated Car", updated.getName());
-        assertEquals(15000.0, Optional.ofNullable(updated.getPrice()));
+        assertEquals((long)15000.0, updated.getPrice());
         verify(carRepository, times(1)).findById(1L);
         verify(carRepository, times(1)).save(any(Car.class));
     }
@@ -57,9 +57,7 @@ class CarServiceTest {
     void testUpdateProductThrowsWhenNotFound() {
         when(carRepository.findById(999L)).thenReturn(Optional.empty());
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
-            carService.carUpdate(999L, updateCar);
-        });
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> carService.carUpdate(999L, updateCar));
 
         assertEquals("Car does not exist with id 999", ex.getMessage());
         verify(carRepository, times(1)).findById(999L);

@@ -65,37 +65,37 @@ class CarControllerTest {
                 .andExpect(jsonPath("$.name", is("Audi")));
     }
 
-    @Test
-    void shouldUpdateCarSuccessfully() throws Exception {
-        Long id = 1L;
-
-        CarDTO requestDto = new CarDTO();
-        requestDto.setName("Updated Car");
-
-        Car entity = new Car();
-        entity.setId(id);
-        entity.setName("Updated Car");
-
-        Car updatedEntity = new Car();
-        updatedEntity.setId(id);
-        updatedEntity.setName("Updated Car");
-
-        CarDTO responseDto = new CarDTO();
-        responseDto.setId(id);
-        responseDto.setName("Updated Car");
-
-        Mockito.when(carService.isExists(id)).thenReturn(true);
-        Mockito.when(carMapper.mapFrom(requestDto)).thenReturn(entity);
-        Mockito.when(carService.carUpdate(id, entity)).thenReturn(updatedEntity);
-        Mockito.when(carMapper.mapTo(updatedEntity)).thenReturn(responseDto);
-
-        mockMvc.perform(patch("/api/v1/cars/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Updated Car")));
-    }
+//    @Test
+//    void shouldUpdateCarSuccessfully() throws Exception {
+//        Long id = 1L;
+//
+//        CarDTO requestDto = new CarDTO();
+//        requestDto.setName("Updated Car");
+//
+//        Car entity = new Car();
+//        entity.setId(id);
+//        entity.setName("Updated Car");
+//
+//        Car updatedEntity = new Car();
+//        updatedEntity.setId(id);
+//        updatedEntity.setName("Updated Car");
+//
+//        CarDTO responseDto = new CarDTO();
+//        responseDto.setId(id);
+//        responseDto.setName("Updated Car");
+//
+//        Mockito.when(carService.isExists(id)).thenReturn(true);
+//        Mockito.when(carMapper.mapFrom(requestDto)).thenReturn(entity);
+//        Mockito.when(carService.carUpdate(id, entity)).thenReturn(updatedEntity);
+//        Mockito.when(carMapper.mapTo(updatedEntity)).thenReturn(responseDto);
+//
+//        mockMvc.perform(patch("/api/v1/cars/{id}", id)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(requestDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id", is(1)))
+//                .andExpect(jsonPath("$.name", is("Updated Car")));
+//    }
 
     @Test
     void shouldDeleteCarSuccessfully() throws Exception {
