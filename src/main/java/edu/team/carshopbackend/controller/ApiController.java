@@ -12,7 +12,7 @@ public class ApiController {
 
     @GetMapping("v1/ping")
     public String pingPong() {
-        return "pong";
+        return "pong!";
     }
 
     @GetMapping("secured/ping")
