@@ -22,3 +22,5 @@ public class Petrol {
     @Column(name = "name")
     private String name;
 }
+
+

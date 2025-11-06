@@ -22,3 +22,5 @@ public class Color {
     @Column(name = "name")
     private String name;
 }
+
+
