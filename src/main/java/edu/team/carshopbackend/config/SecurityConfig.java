@@ -63,17 +63,9 @@ public class SecurityConfig {
         return security
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer ->
-                        httpSecurityCorsConfigurer.configurationSource(request -> {
-                            CorsConfiguration config = new CorsConfiguration();
-                            config.addAllowedOriginPattern("*"); // lub konkretny adres frontendowy
-                            config.addAllowedMethod("GET");
-                            config.addAllowedMethod("POST");
-                            config.addAllowedMethod("PUT");
-                            config.addAllowedMethod("DELETE");
-                            config.addAllowedHeader("*");
-                            config.setAllowCredentials(true);
-                            return config;
-                        })
+                        httpSecurityCorsConfigurer.configurationSource(request ->
+                                new CorsConfiguration().applyPermitDefaultValues())
+
                 ).exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
