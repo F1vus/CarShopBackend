@@ -6,15 +6,14 @@ import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
+import edu.team.carshopbackend.service.impl.UserService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -24,20 +23,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CarController.class)
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
 class CarControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockitoBean
     private JwtCore jwtCore;
 
+    @MockitoBean
+    private UserService userService;
 
-    @Mock
+    @MockitoBean
     private CarService carService;
 
-    @Mock
+    @MockitoBean
     private CarMapper carMapper;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

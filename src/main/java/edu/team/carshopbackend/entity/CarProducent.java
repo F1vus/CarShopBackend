@@ -17,7 +17,7 @@ public class CarProducent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long markID;
+    private Long id;
 
     @Column(name = "name")
     private String name;
