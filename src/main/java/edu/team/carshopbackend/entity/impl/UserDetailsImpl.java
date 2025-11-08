@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class UserDetailsImpl implements UserDetails {
     private Long id;
-    private String username;
+    private String name;
     private String email;
     private String password;
 
@@ -40,7 +40,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
