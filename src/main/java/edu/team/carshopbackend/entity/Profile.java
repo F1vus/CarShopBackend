@@ -1,27 +1,23 @@
 package edu.team.carshopbackend.entity;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="car_producent")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "users_profiles")
 @Getter
 @Setter
-public class CarProducent {
+@NoArgsConstructor
+public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "profile_id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
+    @OneToOne
+    @JoinColumn(unique = true, name = "user_id", nullable = false)
+    private User user;
 }
-
-

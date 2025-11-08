@@ -29,7 +29,7 @@ public class JwtCore {
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + lifetime))
                 .signWith(secretKey)
@@ -45,7 +45,7 @@ public class JwtCore {
                 .getPayload();
     }
 
-    public String getNameFromToken(final String token) {
+    public String getEmailFromToken(final String token) {
         return extractAllClaims(token).getSubject();
     }
 }
