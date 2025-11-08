@@ -31,12 +31,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
         Authentication authentication;
-
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
 
         String jwt = jwtCore.generateToken(authentication);
 
-        log.info("User logged Name: {}", authentication.getName());
+        log.info("User logged by email: {}", authentication.getName());
         return ResponseEntity.ok(jwt);
     }
 
@@ -50,7 +49,7 @@ public class AuthController {
 
         userService.register(user);
 
-        log.info("Registered new user  Id: {}, Name: {}", user.getId(), user.getUsername());
+        log.info("Registered new user  Id: {}, Name: {}, Email: {}", user.getId(), user.getUsername(), user.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body("Created user successfully");
     }
 }

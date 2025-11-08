@@ -29,7 +29,7 @@ class ApiControllerTest {
         mockMvc.perform(get("/api/v1/ping")
                         .contentType(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
-                .andExpect(content().string("pong"));
+                .andExpect(content().string("pong!"));
     }
 
     @Test

@@ -14,6 +14,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, name = "username")
@@ -24,4 +25,7 @@ public class User {
 
     @Column(nullable = false, name="password")
     private String password;
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
 }
