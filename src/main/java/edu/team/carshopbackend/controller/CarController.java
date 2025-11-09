@@ -41,7 +41,7 @@ public class CarController {
     @Operation(summary = "Pobiera samochód po ID", description = "Zwraca samochód o podanym ID, jeśli istnieje. Jeśli samochód nie istnieje, zwraca status 404.")
     public ResponseEntity<CarDTO> findAutoById(@PathVariable Long id) {
         Optional<Car> car = carService.getProductById(id);
-        if(car.isPresent()) {
+        if (car.isPresent()) {
             return ResponseEntity.ok().body(carMapper.mapTo(car.get()));
         } else {
             return ResponseEntity.notFound().build();
@@ -66,4 +66,12 @@ public class CarController {
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCarById(id);
     }
+
+
+
+    @GetMapping("/cars/suggestions")
+    @Operation(summary = "Wskazówki dotyczące nazw samochodów", description = "return list samochodów")
+    public List<String> suggestionCar(@RequestParam String query) { return carService.suggestCar(query).stream().map(Car::getName).distinct().limit(10).toList();} // wskazówki można zrobić więcej
+
 }
+
