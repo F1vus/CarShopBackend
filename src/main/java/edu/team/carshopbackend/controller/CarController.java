@@ -71,6 +71,10 @@ public class CarController {
     @GetMapping("/cars/suggestions")
     @Operation(summary = "Wskazówki dotyczące nazw samochodów", description = "return list samochodów")
     public List<CarSuggestionDTO> suggestionCar(@RequestParam String query) {
+        if (query.length() < 2) {
+            return List.of();
+        }
+
         return carService.suggestCar(query)
                 .stream()
                 .map((car -> new CarSuggestionDTO(car.getId(), car.getName(), car.getPrice(), car.getImageUrl())))
