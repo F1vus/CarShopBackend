@@ -3,15 +3,17 @@ package edu.team.carshopbackend.entity;
 import edu.team.carshopbackend.entity.enums.CarState;
 import edu.team.carshopbackend.entity.enums.converter.CarStateConverter;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
 
 @Entity
 @Table(name = "cars")
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class Car {
 
     @Id
@@ -55,9 +57,15 @@ public class Car {
     @Column(name = "manufacture_year")
     private Integer year;
 
-    @Column(name = "image_url", columnDefinition = "text")
-    private String imageUrl;
+    @ElementCollection
+    @CollectionTable(name = "car_photos", joinColumns = @JoinColumn(name = "car_id"))
+    @Column(name = "photo_url")
+    private List<String> photos;
+
+    @Column(name = "rating")
+    private double rating = 0.0;
+
+    @Column(name = "rating_count")
+    private int ratingCount = 0;
 
 }
-
-

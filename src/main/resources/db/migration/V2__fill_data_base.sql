@@ -30,7 +30,7 @@ VALUES
     ('Electric');
 
 -- ===== INSERT CARS =====
-INSERT INTO cars (name, mark_id, price, description, color_id, mileage, car_status, petrol_type_id, engine_capacity, power, image_url, year)
+INSERT INTO cars (name, mark_id, price, description, color_id, mileage, car_status, petrol_type_id, engine_capacity, power, photos_url, year)
 VALUES
     ('Toyota Corolla', 1, 15000, 'Reliable compact car, great fuel economy.', 2, 45000, 'POOR', 1, 1600, 120, 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Toyota_Corolla_Hybrid_%28E210%29_IMG_4338.jpg/1920px-Toyota_Corolla_Hybrid_%28E210%29_IMG_4338.jpg', 2005),
     ('BMW 320i', 2, 28000, 'Luxury sedan with sporty handling.', 1, 60000, 'USED', 1, 2000, 184, 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/BMW_G20_%282022%29_IMG_7316_%282%29.jpg/1024px-BMW_G20_%282022%29_IMG_7316_%282%29.jpg', 2012),

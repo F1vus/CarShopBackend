@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,7 +78,11 @@ public class CarController {
 
         return carService.suggestCar(query)
                 .stream()
-                .map((car -> new CarSuggestionDTO(car.getId(), car.getName(), car.getPrice(), car.getImageUrl())))
+                .map(car -> new CarSuggestionDTO(
+                        car.getId(),
+                        car.getName(),
+                        car.getPrice(),
+                        car.getPhotos().isEmpty() ? null : Collections.singletonList(car.getPhotos().get(0))))
                 .distinct()
                 .limit(10)
                 .toList();

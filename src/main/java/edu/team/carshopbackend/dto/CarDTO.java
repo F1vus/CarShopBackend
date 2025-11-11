@@ -19,7 +19,7 @@ public class CarDTO {
     private Integer engineCapacity;
     private Integer power;
     private Integer year;
-    private String imageUrl;
+    private String photosUrl;
     private CarProducentDTO producent;
 }
 
