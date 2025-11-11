@@ -1,6 +1,7 @@
 package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
+import edu.team.carshopbackend.dto.CarSuggestionDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
@@ -41,7 +42,7 @@ public class CarController {
     @Operation(summary = "Pobiera samochód po ID", description = "Zwraca samochód o podanym ID, jeśli istnieje. Jeśli samochód nie istnieje, zwraca status 404.")
     public ResponseEntity<CarDTO> findAutoById(@PathVariable Long id) {
         Optional<Car> car = carService.getProductById(id);
-        if(car.isPresent()) {
+        if (car.isPresent()) {
             return ResponseEntity.ok().body(carMapper.mapTo(car.get()));
         } else {
             return ResponseEntity.notFound().build();
@@ -66,4 +67,17 @@ public class CarController {
     public void deleteCar(@PathVariable Long id) {
         carService.deleteCarById(id);
     }
+
+    @GetMapping("/cars/suggestions")
+    @Operation(summary = "Wskazówki dotyczące nazw samochodów", description = "return list samochodów")
+    public List<CarSuggestionDTO> suggestionCar(@RequestParam String query) {
+        return carService.suggestCar(query)
+                .stream()
+                .map((car -> new CarSuggestionDTO(car.getId(), car.getName(), car.getPrice(), car.getImageUrl())))
+                .distinct()
+                .limit(10)
+                .toList();
+    }
+
 }
+
