@@ -1,6 +1,7 @@
 package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
+import edu.team.carshopbackend.dto.CarSuggestionDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
@@ -67,11 +68,16 @@ public class CarController {
         carService.deleteCarById(id);
     }
 
-
-
     @GetMapping("/cars/suggestions")
     @Operation(summary = "Wskazówki dotyczące nazw samochodów", description = "return list samochodów")
-    public List<String> suggestionCar(@RequestParam String query) { return carService.suggestCar(query).stream().map(Car::getName).distinct().limit(10).toList();} // wskazówki można zrobić więcej
+    public List<CarSuggestionDTO> suggestionCar(@RequestParam String query) {
+        return carService.suggestCar(query)
+                .stream()
+                .map((car -> new CarSuggestionDTO(car.getId(), car.getName(), car.getPrice(), car.getImageUrl())))
+                .distinct()
+                .limit(10)
+                .toList();
+    }
 
 }
 

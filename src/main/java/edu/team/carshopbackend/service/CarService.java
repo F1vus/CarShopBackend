@@ -30,7 +30,9 @@ public class CarService {
         return carRepository.findById(id);
     }
 
-    public List<Car> suggestCar(String query) { return carRepository.findByNameContainingIgnoreCase(query); }
+    public List<Car> suggestCar(String query) {
+        return carRepository.findByNameContainingIgnoreCase(query);
+    }
 
     public Car carUpdate(Long id, Car car) {
         car.setId(id);
