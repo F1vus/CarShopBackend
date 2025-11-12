@@ -5,13 +5,12 @@ import edu.team.carshopbackend.dto.CarSuggestionDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +81,7 @@ public class CarController {
                         car.getId(),
                         car.getName(),
                         car.getPrice(),
-                        car.getPhotos().isEmpty() ? null : Collections.singletonList(car.getPhotos().get(0))))
+                        car.getPhotos()))
                 .distinct()
                 .limit(10)
                 .toList();

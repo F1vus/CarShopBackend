@@ -28,7 +28,7 @@ CREATE TABLE cars (
                        petrol_type_id BIGINT,         -- FK -> petrol
                        engine_capacity INTEGER,
                        power INTEGER,
-                       photos_url TEXT,
+                       image_url TEXT,
                        year INTEGER,
                        CONSTRAINT fk_cars_mark FOREIGN KEY (mark_id) REFERENCES car_producent (id) ON DELETE SET NULL,
                        CONSTRAINT fk_cars_color FOREIGN KEY (color_id) REFERENCES colors (id) ON DELETE SET NULL,
