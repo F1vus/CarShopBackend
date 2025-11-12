@@ -1,7 +1,12 @@
 package edu.team.carshopbackend.dto;
 
 import edu.team.carshopbackend.entity.enums.CarState;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +24,7 @@ public class CarDTO {
     private Integer engineCapacity;
     private Integer power;
     private Integer year;
-    private String photosUrl;
+    private List<String> photos;
     private CarProducentDTO producent;
 }
 

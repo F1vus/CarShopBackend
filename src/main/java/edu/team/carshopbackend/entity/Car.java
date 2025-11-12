@@ -58,14 +58,6 @@ public class Car {
     private Integer year;
 
     @ElementCollection
-    @CollectionTable(name = "car_photos", joinColumns = @JoinColumn(name = "car_id"))
-    @Column(name = "photo_url")
+    @Column(name = "photos")
     private List<String> photos;
-
-    @Column(name = "rating")
-    private double rating = 0.0;
-
-    @Column(name = "rating_count")
-    private int ratingCount = 0;
-
 }
