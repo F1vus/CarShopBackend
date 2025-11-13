@@ -21,6 +21,7 @@ public class CarDTO {
     private Integer year;
     private String imageUrl;
     private CarProducentDTO producent;
+    private ProfileDTO owner;
 }
 
 
