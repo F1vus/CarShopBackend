@@ -57,7 +57,6 @@ public class Car {
     @Column(name = "manufacture_year")
     private Integer year;
 
-    @ElementCollection
-    @Column(name = "photos")
-    private List<String> photos;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Photo> photos;
 }

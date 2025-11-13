@@ -2,6 +2,7 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.dto.CarSuggestionDTO;
+import edu.team.carshopbackend.dto.PhotoDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
@@ -81,7 +82,10 @@ public class CarController {
                         car.getId(),
                         car.getName(),
                         car.getPrice(),
-                        car.getPhotos()))
+                        car.getPhotos()
+                                .stream()
+                                .map(photo -> new PhotoDTO(photo.getId(), photo.getUrl())).toList()
+                        ))
                 .distinct()
                 .limit(10)
                 .toList();

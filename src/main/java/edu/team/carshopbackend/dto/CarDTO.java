@@ -24,7 +24,7 @@ public class CarDTO {
     private Integer engineCapacity;
     private Integer power;
     private Integer year;
-    private List<String> photos;
+    private List<PhotoDTO> photos;
     private CarProducentDTO producent;
 }
 
