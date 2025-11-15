@@ -20,4 +20,10 @@ public class Profile {
     @OneToOne
     @JoinColumn(unique = true, name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "rating")
+    private double rating = 0.0;
+
+    @Column(name = "rating_count")
+    private int ratingCount = 0;
 }
