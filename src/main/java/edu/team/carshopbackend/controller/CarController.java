@@ -2,14 +2,15 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.dto.CarSuggestionDTO;
+import edu.team.carshopbackend.dto.PhotoDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,9 +72,20 @@ public class CarController {
     @GetMapping("/cars/suggestions")
     @Operation(summary = "Wskazówki dotyczące nazw samochodów", description = "return list samochodów")
     public List<CarSuggestionDTO> suggestionCar(@RequestParam String query) {
+        if (query.length() < 2) {
+            return List.of();
+        }
+
         return carService.suggestCar(query)
                 .stream()
-                .map((car -> new CarSuggestionDTO(car.getId(), car.getName(), car.getPrice(), car.getImageUrl())))
+                .map(car -> new CarSuggestionDTO(
+                        car.getId(),
+                        car.getName(),
+                        car.getPrice(),
+                        car.getPhotos()
+                                .stream()
+                                .map(photo -> new PhotoDTO(photo.getId(), photo.getUrl())).toList()
+                        ))
                 .distinct()
                 .limit(10)
                 .toList();
