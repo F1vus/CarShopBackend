@@ -3,6 +3,7 @@ package edu.team.carshopbackend.controller;
 import edu.team.carshopbackend.repository.CarProducerRepository;
 import edu.team.carshopbackend.repository.ColorRepository;
 import edu.team.carshopbackend.repository.PetrolRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ public class LookupController {
     private final PetrolRepository petrolRepository;
 
     @GetMapping("/metadata")
+    @Operation(summary = "Get lookup metadata", description = "returns lists of all car producers, available colors, and petrol types in the system")
     public Map<String, Object> getMetadata() {
         Map<String, Object> data = new HashMap<>();
         data.put("producers", carProducerRepository.findAll());

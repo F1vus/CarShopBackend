@@ -5,6 +5,7 @@ import edu.team.carshopbackend.dto.LoginDTO;
 import edu.team.carshopbackend.dto.SignupDTO;
 import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.service.impl.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
+    @Operation(summary = "User login", description = "login of user with(email,password), and return string-success(JWT-token)")
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
         Authentication authentication;
         authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
@@ -40,6 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "User registration", description = "registers of new user with (username,email, and password), and return string-success")
     public ResponseEntity<String> signup(@RequestBody SignupDTO signupDTO){
         User user = new User();
         
