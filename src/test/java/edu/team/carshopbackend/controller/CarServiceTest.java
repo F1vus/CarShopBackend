@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +84,6 @@ class CarServiceTest {
         car2.setName("Toro");
 
         when(carRepository.findByNameContainingIgnoreCase("to")).thenReturn(List.of(car1,car2));
-//        given(CarRepository.findAll()).willReturn(List.of(car1,car2));
         List<Car> result = carService.suggestCar("to");
         assertNotNull(result);
         assertEquals(2,result.size());

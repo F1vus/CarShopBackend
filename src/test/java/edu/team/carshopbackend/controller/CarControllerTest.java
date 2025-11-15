@@ -137,11 +137,6 @@ class CarControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Toro"));
 
         verify(carService, Mockito.times(1)).suggestCar("to");
-
-
-
-
-
     }
 
 
