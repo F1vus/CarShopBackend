@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/profiles")
+@RequestMapping("/api/v1/profiles/")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -21,7 +21,7 @@ public class ProfileController {
 
     @PostMapping("/rate/{userId}")
     public ResponseEntity<Double> rateUser(@PathVariable Long userId,
-                                           @RequestParam double rating) {
+                                           @RequestBody double rating) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
