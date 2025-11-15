@@ -26,6 +26,7 @@ public class CarDTO {
     private Integer year;
     private List<PhotoDTO> photos;
     private CarProducentDTO producent;
+    private ProfileDTO owner;
 }
 
 
