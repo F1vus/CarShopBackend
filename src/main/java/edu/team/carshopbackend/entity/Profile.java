@@ -24,7 +24,7 @@ public class Profile {
     @JoinColumn(unique = true, name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
   
     @Column(name = "rating")

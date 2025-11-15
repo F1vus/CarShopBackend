@@ -2,23 +2,22 @@ package edu.team.carshopbackend.service;
 
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.repository.CarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CarService {
 
     private final CarRepository carRepository;
 
-    @Autowired
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
-    }
-
+    @Transactional
     public Car createProduct(Car car) {
+        car.getPhotos().forEach(photo -> photo.setCar(car));
         return carRepository.save(car);
     }
 
