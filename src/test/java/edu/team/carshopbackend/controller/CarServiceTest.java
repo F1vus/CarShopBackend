@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,5 +72,22 @@ class CarServiceTest {
         carService.deleteCarById(1L);
 
         verify(carRepository, times(1)).deleteById(1L);
+    }
+
+
+    @Test
+    void testSuggestion() {
+        Car car1 = new Car();
+        car1.setName("Tojota");
+
+        Car car2 = new Car();
+        car2.setName("Toro");
+
+        when(carRepository.findByNameContainingIgnoreCase("to")).thenReturn(List.of(car1,car2));
+        List<Car> result = carService.suggestCar("to");
+        assertNotNull(result);
+        assertEquals(2,result.size());
+        verify(carRepository, times(1)).findByNameContainingIgnoreCase("to");
+
     }
 }
