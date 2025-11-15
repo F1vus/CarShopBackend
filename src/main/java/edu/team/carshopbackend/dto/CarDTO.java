@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -22,7 +24,7 @@ public class CarDTO {
     private Integer engineCapacity;
     private Integer power;
     private Integer year;
-    private String imageUrl;
+    private List<PhotoDTO> photos;
     private CarProducentDTO producent;
 }
 

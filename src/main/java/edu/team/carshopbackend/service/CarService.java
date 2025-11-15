@@ -30,6 +30,10 @@ public class CarService {
         return carRepository.findById(id);
     }
 
+    public List<Car> suggestCar(String query) {
+        return carRepository.findByNameContainingIgnoreCase(query);
+    }
+
     public Car carUpdate(Long id, Car car) {
         car.setId(id);
 
@@ -44,7 +48,7 @@ public class CarService {
             Optional.ofNullable(car.getEngineCapacity()).ifPresent(existingCar::setEngineCapacity);
             Optional.ofNullable(car.getPower()).ifPresent(existingCar::setPower);
             Optional.ofNullable(car.getYear()).ifPresent(existingCar::setYear);
-            Optional.ofNullable(car.getImageUrl()).ifPresent(existingCar::setImageUrl);
+            Optional.ofNullable(car.getPhotos()).ifPresent(existingCar::setPhotos);
             Optional.ofNullable(car.getProducent()).ifPresent(existingCar::setProducent);
             return carRepository.save(existingCar);
         }).orElseThrow(() -> new RuntimeException("Car does not exist with id " + id));
@@ -57,4 +61,6 @@ public class CarService {
     public void deleteCarById(Long id) {
         carRepository.deleteById(id);
     }
+
+
 }
