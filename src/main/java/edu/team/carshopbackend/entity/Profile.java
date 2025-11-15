@@ -26,4 +26,10 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
+  
+    @Column(name = "rating")
+    private double rating = 0.0;
+
+    @Column(name = "rating_count")
+    private int ratingCount = 0;
 }
