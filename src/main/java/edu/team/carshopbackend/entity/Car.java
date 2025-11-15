@@ -59,7 +59,7 @@ public class Car {
     private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    @JoinColumn(name = "users_profiles_id", referencedColumnName = "id")
     private Profile profile;
 
 }

@@ -21,12 +21,9 @@ public class Profile {
     private Long id;
 
     @OneToOne
-    @JoinColumn(unique = true, name = "user_id", nullable = false)
+    @JoinColumn(unique = true, name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
-    @Column(name = "name")
-    private String name;
-
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
 }
