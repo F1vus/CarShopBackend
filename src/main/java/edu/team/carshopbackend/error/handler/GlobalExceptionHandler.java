@@ -1,0 +1,33 @@
+package edu.team.carshopbackend.error.handler;
+
+import edu.team.carshopbackend.error.ErrorResponse;
+import edu.team.carshopbackend.error.exception.NotFoundException;
+import edu.team.carshopbackend.error.exception.RatingRangeException;
+import jakarta.persistence.EntityExistsException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(value = NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse NotFoundEntityException(NotFoundException exception) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage());
+    }
+
+    @ExceptionHandler(value = EntityExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse userAlreadyExists(EntityExistsException exception) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage());
+    }
+
+    @ExceptionHandler(value = RatingRangeException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ErrorResponse ratingRangeException(RatingRangeException exception) {
+        return new ErrorResponse(HttpStatus.NOT_ACCEPTABLE.value(), exception.getMessage());
+    }
+
+}

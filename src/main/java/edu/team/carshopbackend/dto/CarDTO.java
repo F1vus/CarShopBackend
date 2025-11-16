@@ -1,10 +1,7 @@
 package edu.team.carshopbackend.dto;
 
 import edu.team.carshopbackend.entity.enums.CarState;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 

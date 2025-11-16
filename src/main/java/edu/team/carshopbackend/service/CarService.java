@@ -1,24 +1,24 @@
 package edu.team.carshopbackend.service;
 
 import edu.team.carshopbackend.entity.Car;
+import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.repository.CarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CarService {
 
     private final CarRepository carRepository;
 
-    @Autowired
-    public CarService(CarRepository carRepository) {
-        this.carRepository = carRepository;
-    }
-
+    @Transactional
     public Car createProduct(Car car) {
+        car.getPhotos().forEach(photo -> photo.setCar(car));
         return carRepository.save(car);
     }
 
@@ -26,15 +26,15 @@ public class CarService {
         return carRepository.findAll();
     }
 
-    public Optional<Car> getProductById(Long id) {
-        return carRepository.findById(id);
+    public Car getProductById(Long id) throws NotFoundException {
+        return carRepository.findById(id).orElseThrow(() -> new NotFoundException("Car not found"));
     }
 
     public List<Car> suggestCar(String query) {
         return carRepository.findByNameContainingIgnoreCase(query);
     }
 
-    public Car carUpdate(Long id, Car car) {
+    public Car carUpdate(Long id, Car car) throws NotFoundException {
         car.setId(id);
 
         return carRepository.findById(id).map(existingCar -> {
@@ -51,7 +51,7 @@ public class CarService {
             Optional.ofNullable(car.getPhotos()).ifPresent(existingCar::setPhotos);
             Optional.ofNullable(car.getProducent()).ifPresent(existingCar::setProducent);
             return carRepository.save(existingCar);
-        }).orElseThrow(() -> new RuntimeException("Car does not exist with id " + id));
+        }).orElseThrow(() -> new NotFoundException("Car does not exist with id " + id));
     }
 
     public boolean isExists(Long id) {

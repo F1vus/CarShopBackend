@@ -59,7 +59,7 @@ public class Car {
 
     @ManyToOne
     @JoinColumn(name = "users_profiles_id", referencedColumnName = "id")
-    private Profile profile;
+    private Profile owner;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;

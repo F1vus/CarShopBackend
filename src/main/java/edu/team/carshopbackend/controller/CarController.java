@@ -9,11 +9,9 @@ import edu.team.carshopbackend.service.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -41,21 +39,14 @@ public class CarController {
 
     @GetMapping("/cars/{id}")
     @Operation(summary = "Picks up the car by ID", description = "Returns the car with the specified ID, if it exists. If the car does not exist, returns status 404.")
-    public ResponseEntity<CarDTO> findAutoById(@PathVariable Long id) {
-        Optional<Car> car = carService.getProductById(id);
-        if (car.isPresent()) {
-            return ResponseEntity.ok().body(carMapper.mapTo(car.get()));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public CarDTO findAutoById(@PathVariable Long id) {
+        Car car = carService.getProductById(id);
+        return carMapper.mapTo(car);
     }
 
     @PatchMapping("/cars/{id}")
     @Operation(summary = "Updates the car", description = "Updates the existing car with the specified ID. Returns the updated object or throws an exception if the car does not exist.")
     public CarDTO updateCar(@PathVariable Long id, @RequestBody CarDTO carDTO) {
-        if (!carService.isExists(id)) {
-            throw new RuntimeException("Car not found with id " + id);
-        }
         carDTO.setId(id);
 
         Car carEntity = carMapper.mapFrom(carDTO);
