@@ -3,13 +3,13 @@ package edu.team.carshopbackend.service.impl;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
+import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.repository.ProfileRepository;
 import edu.team.carshopbackend.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +22,8 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     @Override
-    public UserDetails loadUserByUsername(final String email) throws UsernameNotFoundException {
-        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException(
+    public UserDetails loadUserByUsername(final String email) throws NotFoundException {
+        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException(
                 String.format("User %s not found", email)
         ));
         return UserDetailsImpl.build(user);

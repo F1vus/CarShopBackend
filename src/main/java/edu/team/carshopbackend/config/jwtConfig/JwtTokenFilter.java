@@ -1,6 +1,10 @@
 package edu.team.carshopbackend.config.jwtConfig;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.team.carshopbackend.error.ErrorResponse;
 import edu.team.carshopbackend.service.impl.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -26,7 +29,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal
             (@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String jwt = null;
-        String email;
+        String email = null;
 
         try{
             String authHeader = request.getHeader("Authorization");
@@ -36,8 +39,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if(jwt != null){
                 try{
                     email = jwtCore.getEmailFromToken(jwt);
-                }catch (RuntimeException e){
-                    throw new AuthorizationDeniedException("Invalid or expired JWT token");
+                }catch (ExpiredJwtException e){
+                    handleError(response, "Expired JWT token");
+                }catch (JwtException e){
+                    handleError(response, "Invalid JWT token");
                 }
                 if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -51,5 +56,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void handleError(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        ErrorResponse error = new ErrorResponse(401, message);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(error));
     }
 }
