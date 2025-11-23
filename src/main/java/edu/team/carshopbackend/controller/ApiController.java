@@ -24,7 +24,7 @@ public class ApiController {
     @GetMapping("secured/ping")
     @Operation(summary = "Secured ping endpoint", description = "return secured_pong-string, to test secured API access")
     public String securedPingPong(@AuthenticationPrincipal UserDetailsImpl principal){
-        return "secured_pong, hi! " + principal.getName();
+        return "secured_pong, hi! " + principal.getUsername();
     }
 
     @PostMapping("v1/test_post/{id}")
