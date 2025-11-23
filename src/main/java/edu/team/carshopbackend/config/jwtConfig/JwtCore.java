@@ -29,7 +29,7 @@ public class JwtCore {
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
-                .subject(user.getEmail())
+                .subject(user.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + lifetime))
                 .signWith(secretKey)

@@ -1,5 +1,8 @@
 package edu.team.carshopbackend.controller;
 
+import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +20,11 @@ public class ApiController {
         return "pong!";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("secured/ping")
     @Operation(summary = "Secured ping endpoint", description = "return secured_pong-string, to test secured API access")
-    public String securedPingPong(){
-        return "secured_pong";
+    public String securedPingPong(@AuthenticationPrincipal UserDetailsImpl principal){
+        return "secured_pong, hi! " + principal.getName();
     }
 
     @PostMapping("v1/test_post/{id}")
