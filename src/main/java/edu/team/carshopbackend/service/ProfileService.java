@@ -1,18 +1,23 @@
 package edu.team.carshopbackend.service;
 
+import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.error.exception.RatingRangeException;
 import edu.team.carshopbackend.repository.ProfileRepository;
+import edu.team.carshopbackend.service.impl.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final UserService userService;
 
     @Transactional
     public Profile rateProfile(Long profileId, double rating) throws RatingRangeException, NotFoundException {
@@ -35,5 +40,14 @@ public class ProfileService {
                 .orElseThrow(() -> new NotFoundException("Profile not found by id: " + profileId));
 
         return profile.getRating();
+    }
+
+    public Profile getProfileByUserId(Long userId) {
+        return userService.getUserById(userId).getProfile();
+    }
+
+    public List<Car> getUserCars(Long userId) {
+        Profile profile = getProfileByUserId(userId);
+        return profile.getCars();
     }
 }

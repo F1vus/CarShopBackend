@@ -20,7 +20,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
 
-    @Transactional
     @Override
     public UserDetails loadUserByUsername(final String email) throws NotFoundException {
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException(
@@ -39,5 +38,9 @@ public class UserService implements UserDetailsService {
         Profile profile = new Profile();
         profile.setUser(savedUser);
         profileRepository.save(profile);
+    }
+
+    public User getUserById(final Long id) throws NotFoundException {
+        return userRepository.findUserById(id).orElseThrow(() -> new NotFoundException("User not found by id: " + id));
     }
 }
