@@ -2,6 +2,7 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
 import edu.team.carshopbackend.dto.AuthDTO.LoginDTO;
+import edu.team.carshopbackend.dto.AuthDTO.ResetVerifyRequestDTO;
 import edu.team.carshopbackend.dto.AuthDTO.SignupDTO;
 import edu.team.carshopbackend.dto.AuthDTO.VerifyRequestDTO;
 import edu.team.carshopbackend.entity.User;
@@ -64,7 +65,7 @@ public class AuthController {
     public ResponseEntity<String> verify(@RequestBody VerifyRequestDTO req) {
         var token = tokenService.getToken(req.getToken(), userService.getUserByEmail(req.getEmail()));
         if (token.getExpiresAt().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().body("Expired or used code");
+            return ResponseEntity.badRequest().body("Expired code");
         }
 
         User user = token.getUser();
@@ -74,5 +75,11 @@ public class AuthController {
         tokenService.deleteToken(token);
 
         return ResponseEntity.ok("Email confirmed");
+    }
+
+    @PostMapping("/reset-verify")
+    public ResponseEntity<String> resetVerify(@RequestBody ResetVerifyRequestDTO req) {
+        tokenService.resetVerificationToken(userService.getUserByEmail(req.getEmail()));
+        return ResponseEntity.ok("New token sent");
     }
 }

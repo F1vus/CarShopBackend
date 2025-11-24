@@ -16,27 +16,46 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TokenService {
 
     private final TokenRepository tokenRepository;
+    private final EmailService emailService;
 
     @Transactional
-    public EmailVerificationToken getToken(String token, User user) {
+    public EmailVerificationToken getToken(String token, User user) throws NotFoundException {
         return tokenRepository
                 .findByUserAndToken(user, token)
                 .orElseThrow(() -> new NotFoundException("Invalid code"));
     }
 
-    public EmailVerificationToken createToken(User user) {
+    public EmailVerificationToken createToken(User user) throws NotFoundException {
         EmailVerificationToken token =
                 tokenRepository.findByUser(user).orElse(new EmailVerificationToken());
 
         token.setUser(user);
         token.setToken(generateToken());
+        token.setCreatedAt(LocalDateTime.now());
         token.setExpiresAt(LocalDateTime.now().plusMinutes(10));
 
         return tokenRepository.save(token);
     }
 
+    public void resetVerificationToken(User user) throws IllegalStateException{
+        EmailVerificationToken token = getTokenByUser(user);
+
+        if (token != null) {
+            if (LocalDateTime.now().isBefore(token.getCreatedAt().plusSeconds(60))) {
+                throw new IllegalStateException("Wait 60 seconds before resetting token");
+            }
+        }
+
+        EmailVerificationToken newToken = createToken(user);
+        emailService.sendVerificationEmail(user.getEmail(), newToken);
+    }
+
     public void deleteToken(EmailVerificationToken token) {
         tokenRepository.deleteById(token.getId());
+    }
+
+    public EmailVerificationToken getTokenByUser(User user) throws NotFoundException {
+        return tokenRepository.findByUser(user).orElseThrow(() -> new NotFoundException("Invalid code"));
     }
 
     private String generateToken() {
