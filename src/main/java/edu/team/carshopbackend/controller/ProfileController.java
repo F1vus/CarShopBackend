@@ -15,7 +15,6 @@ import java.util.List;
 
 
 @RestController
-@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
 public class ProfileController {
@@ -23,26 +22,29 @@ public class ProfileController {
     private final ProfileService profileService;
     private final CarMapper carMapper;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/rate/{profileId}")
     public double rateProfile(@PathVariable Long profileId, @RequestBody double rating) {
         Profile updatedProfile = profileService.rateProfile(profileId, rating);
         return updatedProfile.getRating();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/rate/{profileId}")
     public double gerProfileRate(@PathVariable Long profileId) {
         return profileService.getRating(profileId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ProfileDTO getProfile(@AuthenticationPrincipal UserDetailsImpl principal) {
         Profile userProfile = profileService.getProfileByUserId(principal.getId());
         return new ProfileDTO(userProfile.getId(), principal.getName());
     }
 
-    @GetMapping("/cars")
-    public List<CarDTO> getProfileCars(@AuthenticationPrincipal UserDetailsImpl principal) {
-        return profileService.getUserCars(principal.getId()).stream()
+    @GetMapping("/{profileId}/cars")
+    public List<CarDTO> getProfileCars(@PathVariable Long profileId) {
+        return profileService.getUserCars(profileId).stream()
                 .map(carMapper::mapTo)
                 .toList();
     }
