@@ -3,11 +3,7 @@ package edu.team.carshopbackend.controller;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
@@ -30,6 +26,11 @@ public class ApiController {
     @PostMapping("v1/test_post/{id}")
     @Operation(summary = "Echo id", description = "accepts ID and return it in the response")
     public Integer post(@PathVariable("id") Integer id) {
+        return id;
+    }
+
+    @PutMapping("v1/test_put/")
+    public Integer put(@RequestBody Integer id) {
         return id;
     }
 

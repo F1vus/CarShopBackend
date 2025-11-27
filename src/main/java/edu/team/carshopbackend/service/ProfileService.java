@@ -46,8 +46,8 @@ public class ProfileService {
         return userService.getUserById(userId).getProfile();
     }
 
-    public List<Car> getUserCars(Long userId) {
-        Profile profile = getProfileByUserId(userId);
+    public List<Car> getProfileCars(Long profileId) {
+        Profile profile = profileRepository.findById(profileId).orElseThrow(() -> new NotFoundException("Profile not found by id: " + profileId));
         return profile.getCars();
     }
 }

@@ -44,7 +44,7 @@ public class ProfileController {
 
     @GetMapping("/{profileId}/cars")
     public List<CarDTO> getProfileCars(@PathVariable Long profileId) {
-        return profileService.getUserCars(profileId).stream()
+        return profileService.getProfileCars(profileId).stream()
                 .map(carMapper::mapTo)
                 .toList();
     }
