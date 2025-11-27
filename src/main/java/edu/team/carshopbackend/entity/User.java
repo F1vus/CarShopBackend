@@ -14,17 +14,16 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
-
-    @Column(nullable = false, name = "username")
-    private String username;
 
     @Column(nullable = false, name = "email", unique = true)
     private String email;
 
     @Column(nullable = false, name="password")
     private String password;
+
+    @Column(nullable = false, name = "email_verified")
+    private Boolean enabled = false;
 
     @OneToOne(mappedBy = "user")
     private Profile profile;

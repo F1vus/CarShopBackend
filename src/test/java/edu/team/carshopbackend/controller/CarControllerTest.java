@@ -17,7 +17,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,9 +62,9 @@ class CarControllerTest {
         responseDto.setId(1L);
         responseDto.setName("Audi");
 
-        Mockito.when(carMapper.mapFrom(requestDto)).thenReturn(entity);
-        Mockito.when(carService.createProduct(entity)).thenReturn(savedEntity);
-        Mockito.when(carMapper.mapTo(savedEntity)).thenReturn(responseDto);
+        when(carMapper.mapFrom(requestDto)).thenReturn(entity);
+        when(carService.createProduct(entity)).thenReturn(savedEntity);
+        when(carMapper.mapTo(savedEntity)).thenReturn(responseDto);
 
         mockMvc.perform(post("/api/v1/cars")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,10 +93,10 @@ class CarControllerTest {
         responseDto.setId(id);
         responseDto.setName("Updated Car");
 
-        Mockito.when(carService.isExists(id)).thenReturn(true);
-        Mockito.when(carMapper.mapFrom(Mockito.any(CarDTO.class))).thenReturn(entity);
-        Mockito.when(carService.carUpdate(Mockito.eq(id), Mockito.any(Car.class))).thenReturn(updatedEntity);
-        Mockito.when(carMapper.mapTo(Mockito.any(Car.class))).thenReturn(responseDto);
+        when(carService.isExists(id)).thenReturn(true);
+        when(carMapper.mapFrom(Mockito.any(CarDTO.class))).thenReturn(entity);
+        when(carService.carUpdate(Mockito.eq(id), Mockito.any(Car.class))).thenReturn(updatedEntity);
+        when(carMapper.mapTo(Mockito.any(Car.class))).thenReturn(responseDto);
 
         mockMvc.perform(patch("/api/v1/cars/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,4 +117,28 @@ class CarControllerTest {
 
         Mockito.verify(carService, Mockito.times(1)).deleteCarById(id);
     }
+
+    @Test
+    void shouldSuggestCarSuccessfully() throws Exception {
+        Car car1 = new Car();
+        car1.setName("Toyota");
+
+        Car car2 = new Car();
+        car2.setName("Toro");
+
+        when(carService.suggestCar("to")).thenReturn(List.of(car1,car2));
+        mockMvc.perform(get("/api/v1/cars/suggestions")
+                        .param("query","to")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(jsonPath("$[0].name").value("Toyota"))
+                .andExpect(jsonPath("$[1].name").value("Toro"));
+
+        verify(carService, Mockito.times(1)).suggestCar("to");
+    }
+
+
+
 }

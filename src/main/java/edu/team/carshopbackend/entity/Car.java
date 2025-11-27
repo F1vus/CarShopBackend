@@ -57,6 +57,10 @@ public class Car {
     @Column(name = "manufacture_year")
     private Integer year;
 
+    @ManyToOne
+    @JoinColumn(name = "users_profiles_id", referencedColumnName = "id")
+    private Profile owner;
+
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;
 }

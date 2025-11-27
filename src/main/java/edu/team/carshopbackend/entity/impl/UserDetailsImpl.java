@@ -10,20 +10,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 @AllArgsConstructor
-@Getter
-@Setter
 public class UserDetailsImpl implements UserDetails {
+    @Getter
+    @Setter
     private Long id;
-    private String name;
     private String email;
     private String password;
+    private Boolean enabled;
 
     public static UserDetailsImpl build(final User user) {
         return new UserDetailsImpl(
                 user.getId(),
-                user.getUsername(),
                 user.getEmail(),
-                user.getPassword()
+                user.getPassword(),
+                user.getEnabled()
         );
     }
 
@@ -60,6 +60,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return enabled;
     }
 }
