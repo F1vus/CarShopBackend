@@ -1,7 +1,7 @@
 package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
-import edu.team.carshopbackend.dto.ProfileDTO;
+import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
@@ -39,7 +39,7 @@ public class ProfileController {
     @GetMapping
     public ProfileDTO getProfile(@AuthenticationPrincipal UserDetailsImpl principal) {
         Profile userProfile = profileService.getProfileByUserId(principal.getId());
-        return new ProfileDTO(userProfile.getId(), principal.getName());
+        return new ProfileDTO(userProfile);
     }
 
     @GetMapping("/{profileId}/cars")

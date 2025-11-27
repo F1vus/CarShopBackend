@@ -30,4 +30,10 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.NOT_ACCEPTABLE.value(), exception.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalState(Exception e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+    }
+
 }

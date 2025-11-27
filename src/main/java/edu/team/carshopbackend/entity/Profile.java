@@ -20,6 +20,9 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, name = "profile_name")
+    private String name;
+
     @OneToOne
     @JoinColumn(unique = true, name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;

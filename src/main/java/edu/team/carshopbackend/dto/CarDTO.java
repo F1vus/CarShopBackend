@@ -1,5 +1,6 @@
 package edu.team.carshopbackend.dto;
 
+import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.enums.CarState;
 import lombok.*;
 
