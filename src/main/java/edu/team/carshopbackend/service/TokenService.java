@@ -32,7 +32,7 @@ public class TokenService {
         token.setUser(user);
         token.setToken(generateToken());
         token.setCreatedAt(LocalDateTime.now());
-        token.setExpiresAt(LocalDateTime.now().plusMinutes(10));
+        token.setExpiresAt(LocalDateTime.now().plusMinutes(5));
 
         return tokenRepository.save(token);
     }
@@ -41,8 +41,8 @@ public class TokenService {
         EmailVerificationToken token = getTokenByUser(user);
 
         if (token != null) {
-            if (LocalDateTime.now().isBefore(token.getCreatedAt().plusSeconds(60))) {
-                throw new IllegalStateException("Wait 60 seconds before resetting token");
+            if (LocalDateTime.now().isBefore(token.getCreatedAt().plusSeconds(15))) {
+                throw new IllegalStateException("Wait 15 seconds before resetting token");
             }
         }
 
