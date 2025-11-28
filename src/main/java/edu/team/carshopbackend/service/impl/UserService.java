@@ -26,36 +26,47 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws NotFoundException {
-        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException(
-                String.format("User %s not found", email)
-        ));
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("User %s not found", email)
+                ));
         return UserDetailsImpl.build(user);
     }
 
+    // --- REJESTRACJA UŻYTKOWNIKA ---
     @Transactional
     public void register(final User user, String profileName) throws EntityExistsException {
         if(userRepository.existsUserByEmail(user.getEmail())){
             throw new EntityExistsException("Email already exists");
         }
 
+        // zapis użytkownika
         User savedUser = userRepository.save(user);
+
+        // utworzenie profilu powiązanego z użytkownikiem
         Profile profile = new Profile();
         profile.setUser(savedUser);
         profile.setName(profileName);
         profileRepository.save(profile);
 
-        emailService.sendVerificationEmail(user.getEmail(), tokenService.createToken(user));
+        // wysłanie maila weryfikacyjnego z tokenem
+        emailService.sendVerificationEmail(savedUser.getEmail(), tokenService.createToken(savedUser));
     }
 
-    public void updateUser(final User user) {
+    // --- ZAPIS / AKTUALIZACJA UŻYTKOWNIKA (np. zmiana hasła, maila) ---
+    @Transactional
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
-    public User getUserByEmail(final String email) {
-        return userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException("User not found by email: " + email));
+    // --- POBIERANIE UŻYTKOWNIKA ---
+    public User getUserByEmail(final String email) throws NotFoundException {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found by email: " + email));
     }
 
     public User getUserById(final Long id) throws NotFoundException {
-        return userRepository.findUserById(id).orElseThrow(() -> new NotFoundException("User not found by id: " + id));
+        return userRepository.findUserById(id)
+                .orElseThrow(() -> new NotFoundException("User not found by id: " + id));
     }
 }
