@@ -17,7 +17,7 @@ public class ProfileService {
     public Profile patchProfile(Long userId, ProfileDTO dto) {
         Profile profile = getProfileByUserId(userId);
 
-        // Aktualizacja tylko przesłanych pól
+        // Update only submitted fields
         if (dto.getName() != null) {
             profile.setName(dto.getName());
         }

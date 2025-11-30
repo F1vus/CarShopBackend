@@ -11,19 +11,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileDTO {
 
-    @Schema(description = "ID profilu")
+    @Schema(description = "Profile ID")
     private Long id;
 
-    @Schema(description = "Nazwa profilu")
+    @Schema(description = "Profile name")
     private String name;
 
-    @Schema(description = "Telefon użytkownika")
+    @Schema(description = "User's phone")
     private String phoneNumber;
 
-    @Schema(description = "Email użytkownika")
+    @Schema(description = "User email")
     private String email;
 
-    @Schema(description = "URL zdjęcia profilowego")
+    @Schema(description = "Profile picture URL")
     private String profileImage;
 
     public ProfileDTO(Profile profile) {
