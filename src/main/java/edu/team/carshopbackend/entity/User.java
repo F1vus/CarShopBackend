@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -27,4 +29,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Profile profile;
+
+    @OneToMany(mappedBy = "user")
+    private List<JwtToken> jwtTokens;
 }
