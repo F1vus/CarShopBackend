@@ -29,5 +29,8 @@ public class ProfileDTO {
     public ProfileDTO(Profile profile) {
         this.id = profile.getId();
         this.name = profile.getName();
+        this.email = profile.getEmail();
+        this.phoneNumber = profile.getPhoneNumber();
+        this.profileImage = profile.getProfileImage();
     }
 }
