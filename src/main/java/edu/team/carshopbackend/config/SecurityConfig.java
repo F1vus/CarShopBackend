@@ -33,8 +33,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
 
+
     @Value("${car-shop-webpage-url}")
-    private String carShopWebPageUrl;
+    private List<String> allowedOrigins;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,7 +52,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(carShopWebPageUrl));
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
