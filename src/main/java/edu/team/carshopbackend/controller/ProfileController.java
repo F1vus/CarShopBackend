@@ -47,10 +47,9 @@ public class ProfileController {
         return profileMapper.mapTo(userProfile);
     }
 
-    @PutMapping("/update")
-    public ProfileDTO updateProfile(@AuthenticationPrincipal UserDetailsImpl principal,
-                                    @RequestBody ProfileDTO dto) {
-
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping
+    public ProfileDTO updateProfile(@AuthenticationPrincipal UserDetailsImpl principal, @RequestBody ProfileDTO dto) {
         Profile updated = profileService.updateProfile(principal.getId(), dto);
         return profileMapper.mapTo(updated);
     }
