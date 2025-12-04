@@ -1,6 +1,7 @@
 package edu.team.carshopbackend.error.handler;
 
 import edu.team.carshopbackend.error.ErrorResponse;
+import edu.team.carshopbackend.error.exception.ChangePasswordException;
 import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.error.exception.RatingRangeException;
 import jakarta.persistence.EntityExistsException;
@@ -33,6 +34,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalState(Exception e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+    }
+
+    @ExceptionHandler(ChangePasswordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse changePasswordException(ChangePasswordException e) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
     }
 

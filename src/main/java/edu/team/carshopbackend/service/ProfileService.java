@@ -7,8 +7,9 @@ import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.error.exception.NotFoundException;
-import edu.team.carshopbackend.error.exception.UnauthorizedException;
+import edu.team.carshopbackend.error.exception.ChangePasswordException;
 import edu.team.carshopbackend.repository.ProfileRepository;
+import edu.team.carshopbackend.service.impl.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,15 +24,9 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final UserService userService;
-    private final TokenService tokenService;
+    private final EmailVerificationTokenService emailVerificationTokenService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
-
-    @Transactional
-    public Profile rateProfile(Long profileId, double rating) {
-        if (rating < 1.0 || rating > 5.0) {
-            throw new IllegalArgumentException("Rating must be between 1.0 and 5.0");
-    }
 
     @Transactional
     public Profile updateProfile(Long userId, ProfileDTO dto) {
@@ -68,39 +63,30 @@ public class ProfileService {
     public void resetPassword(String email) throws NotFoundException {
         User user = userService.getUserByEmail(email);
 
-        var token = tokenService.createToken(user);
+        var token = emailVerificationTokenService.createToken(user);
         emailService.sendVerificationEmail(email, token);
     }
 
     @Transactional
     public void changePassword(Long userId, ChangePasswordRequestDTO dto)
-            throws UnauthorizedException, NotFoundException {
+            throws ChangePasswordException, NotFoundException {
 
         User user = userService.getUserById(userId);
 
         if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
-            throw new UnauthorizedException("Old password is incorrect");
+            throw new ChangePasswordException("Old password is incorrect");
         }
 
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-        userService.saveUser(user);
+        userService.updateUser(user);
     }
 
     @Transactional
     public void changeEmail(Long userId, UpdateEmailRequestDTO dto) throws NotFoundException {
-        User user = userService.getUserById(userId);
-        user.setEmail(dto.getNewEmail());
-        userService.saveUser(user);
-    public Profile getProfileByUserId(Long userId) {
-        return profileRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Profile not found for userId: " + userId));
+            User user = userService.getUserById(userId);
+            user.setEmail(dto.getNewEmail());
+            userService.updateUser(user);
     }
-
-    public List<Car> getProfileCars(Long profileId) {
-        Profile profile = getProfileByUserId(profileId);
-        return profile.getCars();
-    }
-
 
     @Transactional
     public Profile rateProfile(Long profileId, double rating) {
