@@ -1,0 +1,50 @@
+package edu.team.carshopbackend.config.jwtConfig;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.team.carshopbackend.repository.JwtTokenRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Map;
+
+@Service
+@RequiredArgsConstructor
+public class LogoutService implements LogoutHandler {
+
+    private final JwtTokenRepository jwtTokenRepository;
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        if (authHeader == null ||  !authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        jwt = authHeader.substring(7);
+        var storedToken = jwtTokenRepository.findByToken(jwt).orElse(null);
+
+        if (storedToken != null) {
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
+            jwtTokenRepository.save(storedToken);
+        }
+        try {
+            logoutResponse(response);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void logoutResponse(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(Map.of(
+                "message", "Logged out successfully"
+        )));
+    }
+}

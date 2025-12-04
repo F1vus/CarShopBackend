@@ -14,7 +14,9 @@ public class CarMapper implements Mapper<Car, CarDTO> {
 
     @Override
     public CarDTO mapTo(Car car) {
-        return modelMapper.map(car, CarDTO.class);
+        CarDTO carDTO = modelMapper.map(car, CarDTO.class);
+        carDTO.getOwner().setEmail(car.getOwner().getUser().getEmail());
+        return carDTO;
     }
 
     @Override
