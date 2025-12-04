@@ -13,7 +13,7 @@ class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("CarShop SprintBoard API")
-                        .description("Dokumentacja API dla projektu zespołowego CarShopSprintBoard")
+                        .description("API documentation for the CarShopSprintBoard team project")
                         .version("1.0.0"));
     }
 }

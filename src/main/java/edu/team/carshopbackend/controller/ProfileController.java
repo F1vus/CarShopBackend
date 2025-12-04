@@ -8,6 +8,7 @@ import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
+import edu.team.carshopbackend.mapper.impl.ProfileMapper;
 import edu.team.carshopbackend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final CarMapper carMapper;
+    private final ProfileMapper profileMapper;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/rate/{profileId}")
@@ -34,7 +36,7 @@ public class ProfileController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/rate/{profileId}")
-    public double getProfileRate(@PathVariable Long profileId)  {
+    public double getProfileRate(@PathVariable Long profileId) {
         return profileService.getRating(profileId);
     }
 
@@ -42,7 +44,15 @@ public class ProfileController {
     @GetMapping
     public ProfileDTO getProfile(@AuthenticationPrincipal UserDetailsImpl principal)  {
         Profile userProfile = profileService.getProfileByUserId(principal.getId());
-        return new ProfileDTO(userProfile);
+        return profileMapper.mapTo(userProfile);
+    }
+
+    @PutMapping("/update")
+    public ProfileDTO updateProfile(@AuthenticationPrincipal UserDetailsImpl principal,
+                                    @RequestBody ProfileDTO dto) {
+
+        Profile updated = profileService.updateProfile(principal.getId(), dto);
+        return profileMapper.mapTo(updated);
     }
 
     @GetMapping("/{profileId}/cars")

@@ -2,6 +2,7 @@ package edu.team.carshopbackend.config.jwtConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.team.carshopbackend.error.ErrorResponse;
+import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.impl.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -24,6 +25,7 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtCore jwtCore;
     private final UserService userDetailsService;
+    private final JwtTokenRepository jwtTokenRepository;
 
     @Override
     protected void doFilterInternal
@@ -32,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String email = null;
 
         try{
-            String authHeader = request.getHeader("Authorization");
+            final String authHeader = request.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 jwt = authHeader.substring(7);
             }
@@ -45,10 +47,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     handleError(response, "Invalid JWT token");
                 }
                 if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                    var authentication =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    var isTokenValid  = jwtTokenRepository.findByToken(jwt)
+                            .map(t->!t.isExpired() && !t.isRevoked())
+                            .orElse(false);
+                    if(isTokenValid){
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                        var authentication =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    } else {
+                        handleError(response, "Invalid JWT token");
+                    }
                 }
             }
         } catch (Exception e) {

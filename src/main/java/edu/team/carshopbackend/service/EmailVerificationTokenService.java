@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
-public class TokenService {
+public class EmailVerificationTokenService {
 
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
