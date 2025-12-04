@@ -6,9 +6,6 @@ import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.ProfileService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,21 +47,5 @@ public class ProfileController {
         return profileService.getProfileCars(profileId).stream()
                 .map(carMapper::mapTo)
                 .toList();
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PatchMapping
-    @Operation(summary = "Partially updates the user profile")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Profile has been updated"),
-            @ApiResponse(responseCode = "404", description = "Profile not found"),
-            @ApiResponse(responseCode = "400", description = "Data validation error")
-    })
-    public ProfileDTO patchProfile(
-            @AuthenticationPrincipal UserDetailsImpl principal,
-            @RequestBody ProfileDTO dto
-    ) {
-        Profile updatedProfile = profileService.patchProfile(principal.getId(), dto);
-        return new ProfileDTO(updatedProfile);
     }
 }
