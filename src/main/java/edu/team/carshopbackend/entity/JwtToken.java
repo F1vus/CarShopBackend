@@ -1,0 +1,36 @@
+package edu.team.carshopbackend.entity;
+
+import edu.team.carshopbackend.entity.enums.JwtTokenType;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@Entity
+@Table(name = "jwt_tokens")
+@Getter
+@Setter
+@NoArgsConstructor
+public class JwtToken {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, name = "token")
+    private String token;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, name = "token_type")
+    private JwtTokenType tokenType;
+
+    @Column(nullable = false, name = "expired")
+    private boolean expired;
+
+    @Column(nullable = false, name = "revoked")
+    private boolean revoked;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+}

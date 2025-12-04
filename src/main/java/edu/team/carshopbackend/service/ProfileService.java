@@ -28,6 +28,17 @@ public class ProfileService {
         return profileRepository.save(profile);
     }
 
+    public Profile save(Profile profile) {
+        return profileRepository.save(profile);
+    }
+
+    public double getRating(Long profileId) throws NotFoundException {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new NotFoundException("Profile not found by id: " + profileId));
+
+        return profile.getRating();
+    }
+
     public Profile getProfileByUserId(Long userId) {
         return profileRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("Profile not found for userId: " + userId));

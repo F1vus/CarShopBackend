@@ -46,6 +46,7 @@ public class JwtCore {
     }
 
     public String getEmailFromToken(final String token) {
-        return extractAllClaims(token).getSubject();
+        Claims claims = extractAllClaims(token);
+        return claims.getSubject();
     }
 }
