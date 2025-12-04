@@ -3,6 +3,7 @@ package edu.team.carshopbackend.service;
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Profile;
+import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.repository.ProfileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -60,11 +61,5 @@ public class ProfileService {
         profile.setRatingCount(profile.getRatingCount() + 1);
 
         return profileRepository.save(profile);
-    }
-
-    public double getRating(Long profileId) {
-        Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new NoSuchElementException("Profile not found for profileId: " + profileId));
-        return profile.getRating();
     }
 }
