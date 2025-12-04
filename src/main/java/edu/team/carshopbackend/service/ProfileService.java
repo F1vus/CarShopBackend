@@ -3,17 +3,57 @@ package edu.team.carshopbackend.service;
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Profile;
+import edu.team.carshopbackend.repository.ProfileRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 
-public interface ProfileService {
+@Service
+@RequiredArgsConstructor
+public class ProfileService {
 
-    Profile updateProfile(Long userId, ProfileDTO dto);
+    private final ProfileRepository profileRepository;
 
-    Profile getProfileByUserId(Long userId);
+    @Transactional
+    public Profile updateProfile(Long userId, ProfileDTO dto) {
+        Profile profile = getProfileByUserId(userId);
 
-    List<Car> getProfileCars(Long profileId);
+        if (dto.getName() != null) profile.setName(dto.getName());
+        if (dto.getPhoneNumber() != null) profile.setPhoneNumber(dto.getPhoneNumber());
+        if (dto.getProfileImage() != null) profile.setProfileImage(dto.getProfileImage());
 
-    Profile rateProfile(Long profileId, double rating);
+        return profileRepository.save(profile);
+    }
 
-    double getRating(Long profileId);
+    public Profile getProfileByUserId(Long userId) {
+        return profileRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Profile not found for userId: " + userId));
+    }
+
+    public List<Car> getProfileCars(Long profileId) {
+        Profile profile = getProfileByUserId(profileId);
+        return profile.getCars();
+    }
+
+
+    @Transactional
+    public Profile rateProfile(Long profileId, double rating) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new NoSuchElementException("Profile not found for profileId: " + profileId));
+
+        double newRating = ((profile.getRating() * profile.getRatingCount()) + rating) / (profile.getRatingCount() + 1);
+        profile.setRating(newRating);
+        profile.setRatingCount(profile.getRatingCount() + 1);
+
+        return profileRepository.save(profile);
+    }
+
+    public double getRating(Long profileId) {
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new NoSuchElementException("Profile not found for profileId: " + profileId));
+        return profile.getRating();
+    }
 }

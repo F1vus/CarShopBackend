@@ -37,12 +37,8 @@ public class Profile {
     @Column(name = "rating_count")
     private int ratingCount = 0;
 
-    // --- NOWE POLA ---
-    @Column(name = "phone_number")
+    @Column(name = "profile_phone_number")
     private String phoneNumber;
-
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "profile_image")
     private String profileImage;

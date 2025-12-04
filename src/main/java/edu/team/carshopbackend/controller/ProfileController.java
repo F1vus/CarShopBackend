@@ -5,6 +5,7 @@ import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
+import edu.team.carshopbackend.mapper.impl.ProfileMapper;
 import edu.team.carshopbackend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,26 +17,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
 public class ProfileController {
 
     private final ProfileService profileService;
     private final CarMapper carMapper;
+    private final ProfileMapper profileMapper;
 
-    // ==========================
-    // UPDATE PROFILE
-    // ==========================
-    @PutMapping("/update")
-    public ProfileDTO updateProfile(@AuthenticationPrincipal UserDetailsImpl principal,
-                                    @RequestBody ProfileDTO dto) {
-
-        Profile updated = profileService.updateProfile(principal.getId(), dto);
-        return new ProfileDTO(updated);
-    }
-
-    // ==========================
-    // RATE PROFILE
-    // ==========================
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/rate/{profileId}")
     public double rateProfile(@PathVariable Long profileId, @RequestBody double rating) {
@@ -49,19 +36,21 @@ public class ProfileController {
         return profileService.getRating(profileId);
     }
 
-    // ==========================
-    // GET OWN PROFILE
-    // ==========================
     @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ProfileDTO getProfile(@AuthenticationPrincipal UserDetailsImpl principal) {
         Profile userProfile = profileService.getProfileByUserId(principal.getId());
-        return new ProfileDTO(userProfile);
+        return profileMapper.mapTo(userProfile);
     }
 
-    // ==========================
-    // GET CARS OF PROFILE
-    // ==========================
+    @PutMapping("/update")
+    public ProfileDTO updateProfile(@AuthenticationPrincipal UserDetailsImpl principal,
+                                    @RequestBody ProfileDTO dto) {
+
+        Profile updated = profileService.updateProfile(principal.getId(), dto);
+        return profileMapper.mapTo(updated);
+    }
+
     @GetMapping("/{profileId}/cars")
     public List<CarDTO> getProfileCars(@PathVariable Long profileId) {
         return profileService.getProfileCars(profileId).stream()
