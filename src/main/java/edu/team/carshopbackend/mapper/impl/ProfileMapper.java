@@ -13,8 +13,10 @@ public class ProfileMapper implements Mapper<Profile, ProfileDTO> {
     private final ModelMapper modelMapper;
 
     @Override
-    public ProfileDTO mapTo(Profile profile) {
-        return modelMapper.map(profile, ProfileDTO.class);
+    public ProfileDTO mapTo(Profile source) {
+        ProfileDTO dto = modelMapper.map(source, ProfileDTO.class);
+        dto.setEmail(source.getUser().getEmail());
+        return dto;
     }
 
     @Override

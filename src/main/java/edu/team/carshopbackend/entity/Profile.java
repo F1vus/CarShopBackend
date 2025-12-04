@@ -24,7 +24,7 @@ public class Profile {
     @Column(nullable = false, name = "profile_name")
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(unique = true, name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
