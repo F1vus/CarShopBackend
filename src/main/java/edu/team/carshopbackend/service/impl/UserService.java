@@ -19,9 +19,10 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws NotFoundException {
-        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException(
-                String.format("User %s not found", email)
-        ));
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("User %s not found", email)
+                ));
         return UserDetailsImpl.build(user);
     }
 
@@ -33,15 +34,17 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public void updateUser(final User user) {
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
-    public User getUserByEmail(final String email) {
-        return userRepository.findUserByEmail(email).orElseThrow(() -> new NotFoundException("User not found by email: " + email));
+    public User getUserByEmail(final String email) throws NotFoundException {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found by email: " + email));
     }
 
     public User getUserById(final Long id) throws NotFoundException {
-        return userRepository.findUserById(id).orElseThrow(() -> new NotFoundException("User not found by id: " + id));
+        return userRepository.findUserById(id)
+                .orElseThrow(() -> new NotFoundException("User not found by id: " + id));
     }
 }
