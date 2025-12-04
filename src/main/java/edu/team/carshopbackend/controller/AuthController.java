@@ -71,7 +71,7 @@ public class AuthController {
         User user = token.getUser();
         user.setEnabled(true);
 
-        userService.updateUser(user);
+        userService.saveUser(user);
         tokenService.deleteToken(token);
 
         return ResponseEntity.ok("Email confirmed");
