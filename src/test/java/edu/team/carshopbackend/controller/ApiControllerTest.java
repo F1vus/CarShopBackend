@@ -1,6 +1,7 @@
 package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
+import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.impl.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ class ApiControllerTest {
 
     @MockitoBean
     private UserService userService;
+
+    @MockitoBean
+    private JwtTokenRepository jwtTokenRepository;
 
     @Test
     void shouldReturnPong() throws Exception {

@@ -2,6 +2,7 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.repository.CarRepository;
+import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.CarService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,9 @@ class CarServiceTest {
 
     @Mock
     private CarRepository carRepository;
+
+    @MockitoBean
+    private JwtTokenRepository jwtTokenRepository;
 
     @InjectMocks
     private CarService carService;
