@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,16 +24,22 @@ public class Profile {
     @Column(nullable = false, name = "profile_name")
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(unique = true, name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
-  
+
     @Column(name = "rating")
     private double rating = 0.0;
 
     @Column(name = "rating_count")
     private int ratingCount = 0;
+
+    @Column(name = "profile_phone_number")
+    private String phoneNumber;
+
+    @Column(name = "profile_image")
+    private String profileImage;
 }
