@@ -74,7 +74,7 @@ public class ProfileControllerPatchTest {
     void patchProfile_updatesFieldsPartially() throws Exception {
         ProfileDTO dto = new ProfileDTO();
         dto.setName("New Name");
-        dto.setPhoneNumber("987654321");
+        dto.setPhoneNumber("148987654321");
 
         mockMvc.perform(patch("/api/v1/profiles")
                         .contentType(MediaType.APPLICATION_JSON)
