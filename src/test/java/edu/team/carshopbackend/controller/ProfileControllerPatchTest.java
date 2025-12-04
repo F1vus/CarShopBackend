@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
+import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.repository.ProfileRepository;
 import edu.team.carshopbackend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -23,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ProfileControllerPatchTest {
+
+    @MockitoBean
+    private JwtTokenRepository jwtTokenRepository;
 
     @Autowired
     private MockMvc mockMvc;

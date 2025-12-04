@@ -6,6 +6,7 @@ import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Photo;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
+import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.CarService;
 import edu.team.carshopbackend.service.impl.UserService;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,9 @@ class CarControllerTest {
 
     @MockitoBean
     private CarMapper carMapper;
+
+    @MockitoBean
+    private JwtTokenRepository jwtTokenRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
