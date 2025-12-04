@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,10 +30,19 @@ public class Profile {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
-  
+
     @Column(name = "rating")
     private double rating = 0.0;
 
     @Column(name = "rating_count")
     private int ratingCount = 0;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "profile_image")
+    private String profileImage;
 }

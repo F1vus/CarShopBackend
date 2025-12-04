@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
 import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
+import edu.team.carshopbackend.entity.Photo;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
 import edu.team.carshopbackend.service.impl.UserService;
@@ -23,7 +24,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CarController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -121,9 +123,11 @@ class CarControllerTest {
     @Test
     void shouldSuggestCarSuccessfully() throws Exception {
         Car car1 = new Car();
+        car1.setPhotos(List.of(new Photo()));
         car1.setName("Toyota");
 
         Car car2 = new Car();
+        car2.setPhotos(List.of(new Photo()));
         car2.setName("Toro");
 
         when(carService.suggestCar("to")).thenReturn(List.of(car1,car2));
