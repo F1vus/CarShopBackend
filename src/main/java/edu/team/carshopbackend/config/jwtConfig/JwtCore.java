@@ -30,6 +30,7 @@ public class JwtCore {
 
         return Jwts.builder()
                 .subject(user.getUsername())
+                .claim("user_profile_id", user.getProfile().getId())
                 .issuedAt(new Date())
                 .expiration(new Date(new Date().getTime() + lifetime))
                 .signWith(secretKey)
