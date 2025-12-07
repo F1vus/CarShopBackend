@@ -57,6 +57,9 @@ public class Car {
     @Column(name = "manufacture_year")
     private Integer year;
 
+    @Column(name = "had_accidents", nullable = false)
+    private Boolean hadAccidents = false;
+
     @ManyToOne
     @JoinColumn(name = "users_profiles_id", referencedColumnName = "id")
     private Profile owner;

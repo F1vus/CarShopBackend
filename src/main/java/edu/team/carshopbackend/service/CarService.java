@@ -50,6 +50,7 @@ public class CarService {
             Optional.ofNullable(car.getYear()).ifPresent(existingCar::setYear);
             Optional.ofNullable(car.getPhotos()).ifPresent(existingCar::setPhotos);
             Optional.ofNullable(car.getProducent()).ifPresent(existingCar::setProducent);
+            Optional.ofNullable(car.getHadAccidents()).ifPresent(existingCar::setHadAccidents);
             return carRepository.save(existingCar);
         }).orElseThrow(() -> new NotFoundException("Car does not exist with id " + id));
     }

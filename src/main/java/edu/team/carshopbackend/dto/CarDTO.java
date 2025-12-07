@@ -25,6 +25,7 @@ public class CarDTO {
     private List<PhotoDTO> photos;
     private CarProducentDTO producent;
     private ProfileDTO owner;
+    private Boolean hadAccidents;
 }
 
 
