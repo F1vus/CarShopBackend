@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +55,7 @@ class CarServiceTest {
 
         assertNotNull(updated);
         assertEquals("Updated Car", updated.getName());
-        assertEquals((long)15000.0, updated.getPrice());
+        assertEquals((long) 15000.0, updated.getPrice());
         verify(carRepository, times(1)).findById(1L);
         verify(carRepository, times(1)).save(any(Car.class));
     }
@@ -88,11 +89,81 @@ class CarServiceTest {
         Car car2 = new Car();
         car2.setName("Toro");
 
-        when(carRepository.findByNameContainingIgnoreCase("to")).thenReturn(List.of(car1,car2));
+        when(carRepository.findByNameContainingIgnoreCase("to")).thenReturn(List.of(car1, car2));
         List<Car> result = carService.suggestCar("to");
         assertNotNull(result);
-        assertEquals(2,result.size());
+        assertEquals(2, result.size());
         verify(carRepository, times(1)).findByNameContainingIgnoreCase("to");
 
+    }
+
+    @Test
+    void testSuggestionEmptyList() {
+        when(carRepository.findByNameContainingIgnoreCase("to")).thenReturn(Collections.emptyList());
+        List<Car> result = carService.suggestCar("to");
+        assertNotNull(result);
+        assertEquals(0, result.size());
+        verify(carRepository, times(1)).findByNameContainingIgnoreCase("to");
+    }
+
+    @Test
+    void testSuggestionWithSpecialCharacter() {
+        Car car1 = new Car();
+        car1.setName("@!Tojota");
+
+        Car car2 = new Car();
+        car2.setName("-L");
+
+        Car car3 = new Car();
+        car3.setName("#");
+
+        Car car4 = new Car();
+        car4.setName("$%Tes");
+
+        Car car5 = new Car();
+        car5.setName("^Au");
+
+        Car car6 = new Car();
+        car6.setName("^Au*&*");
+
+        Car car7 = new Car();
+        car7.setName("(BM)");
+
+        String queries = "@#$%^&*()";
+
+        when(carRepository.findByNameContainingIgnoreCase(queries))
+                .thenReturn(List.of(car1, car2, car3, car4, car5, car6, car7));
+        List<Car> result = carService.suggestCar(queries);
+        assertNotNull(result);
+        assertEquals(7, result.size());
+        verify(carRepository, times(1)).findByNameContainingIgnoreCase(queries);
+    }
+
+    @Test
+    void testSuggestionCarsIgnoringCase() {
+        Car car1 = new Car();
+        car1.setName("Tojota");
+
+        Car car2 = new Car();
+        car2.setName("TOJO");
+
+        Car car3 = new Car();
+        car3.setName("TOro");
+
+        Car car4 = new Car();
+        car4.setName("toDO");
+
+        when(carRepository.findByNameContainingIgnoreCase("to"))
+                .thenReturn(List.of(car1, car2, car3, car4));
+        List<Car> result = carService.suggestCar("to");
+
+        assertNotNull(result);
+        assertEquals(4, result.size());
+        assertTrue(result.contains(car1));
+        assertTrue(result.contains(car2));
+        assertTrue(result.contains(car3));
+        assertTrue(result.contains(car4));
+
+        verify(carRepository, times(1)).findByNameContainingIgnoreCase("to");
     }
 }
