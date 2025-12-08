@@ -4,6 +4,7 @@ import edu.team.carshopbackend.error.ErrorResponse;
 import edu.team.carshopbackend.error.exception.ChangePasswordException;
 import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.error.exception.RatingRangeException;
+import edu.team.carshopbackend.error.exception.RefreshTokenException;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +41,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ChangePasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse changePasswordException(ChangePasswordException e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
+    }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse refreshTokenException(RefreshTokenException e) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(),e.getMessage());
     }
 

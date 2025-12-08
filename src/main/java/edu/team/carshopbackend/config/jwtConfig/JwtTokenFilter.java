@@ -30,6 +30,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal
             (@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().equals("/api/auth/refresh-token")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         String jwt = null;
         String email = null;
 
@@ -70,7 +76,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private void handleError(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-
+        response.setCharacterEncoding("UTF-8");
         ErrorResponse error = new ErrorResponse(401, message);
         response.getWriter().write(new ObjectMapper().writeValueAsString(error));
     }

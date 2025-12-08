@@ -1,16 +1,23 @@
 package edu.team.carshopbackend.service;
 
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
+import edu.team.carshopbackend.dto.AuthDTO.AuthenticationResponseDTO;
 import edu.team.carshopbackend.dto.AuthDTO.LoginDTO;
 import edu.team.carshopbackend.dto.AuthDTO.SignupDTO;
 import edu.team.carshopbackend.entity.JwtToken;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.entity.enums.JwtTokenType;
+import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
+import edu.team.carshopbackend.error.exception.RefreshTokenException;
 import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.impl.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,16 +38,22 @@ public class AuthenticationService {
     private final EmailVerificationTokenService emailVerificationTokenService;
 
 
-    public String authenticate(LoginDTO loginDTO) {
+    public AuthenticationResponseDTO authenticate(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
 
         var user = userService.getUserByEmail(loginDTO.getEmail());
+        UserDetailsImpl userDetails =  UserDetailsImpl.build(user);
 
-        String jwt = jwtCore.generateToken(authentication);
-        saveUserJwtToken(user, jwt);
+        String accessJwt = jwtCore.generateToken(userDetails);
+        String refreshJwt = jwtCore.generateRefreshToken(userDetails);
+
+        saveUserJwtToken(user, accessJwt);
         log.info("User logged by email: {}", authentication.getName());
-        return jwt;
+        return AuthenticationResponseDTO.builder()
+                .accessToken(accessJwt)
+                .refreshToken(refreshJwt)
+                .build();
     }
 
     public String register(SignupDTO signupDTO) {
@@ -70,5 +83,40 @@ public class AuthenticationService {
         token.setRevoked(false);
         token.setExpired(false);
         jwtTokenRepository.save(token);
+    }
+
+    public AuthenticationResponseDTO refreshToken(HttpServletRequest request) {
+        String refreshToken = null;
+        String email;
+
+        try{
+            final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                refreshToken = authHeader.substring(7);
+            }
+            if(refreshToken != null){
+                try{
+                    email = jwtCore.getEmailFromToken(refreshToken);
+                }catch (ExpiredJwtException e){
+                    throw new RefreshTokenException("Expired JWT token");
+                }catch (JwtException e){
+                    throw new RefreshTokenException("Invalid JWT token");
+                }
+                if(email != null) {
+                    User user = userService.getUserByEmail(email);
+
+                    String accessJwt = jwtCore.generateToken(UserDetailsImpl.build(user));
+                    saveUserJwtToken(user, accessJwt);
+
+                    return AuthenticationResponseDTO.builder()
+                            .accessToken(accessJwt)
+                            .refreshToken(refreshToken)
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }
