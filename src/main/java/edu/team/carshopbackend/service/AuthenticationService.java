@@ -1,20 +1,21 @@
 package edu.team.carshopbackend.service;
 
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
-import edu.team.carshopbackend.dto.AuthDTO.AuthenticationResponseDTO;
-import edu.team.carshopbackend.dto.AuthDTO.LoginDTO;
-import edu.team.carshopbackend.dto.AuthDTO.SignupDTO;
+import edu.team.carshopbackend.dto.AuthDTO.*;
 import edu.team.carshopbackend.entity.JwtToken;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.entity.enums.JwtTokenType;
 import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
+import edu.team.carshopbackend.error.exception.ChangePasswordException;
+import edu.team.carshopbackend.error.exception.NotFoundException;
 import edu.team.carshopbackend.error.exception.RefreshTokenException;
 import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.impl.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -42,8 +43,8 @@ public class AuthenticationService {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
 
-        var user = userService.getUserByEmail(loginDTO.getEmail());
-        UserDetailsImpl userDetails =  UserDetailsImpl.build(user);
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        var user = userService.getUserById(userDetails.getId());
 
         String accessJwt = jwtCore.generateToken(userDetails);
         String refreshJwt = jwtCore.generateRefreshToken(userDetails);
@@ -73,6 +74,35 @@ public class AuthenticationService {
 
         log.info("Registered new user  Id: {}, Email: {}", user.getId(), user.getEmail());
         return "User registered successfully";
+    }
+
+    @Transactional
+    public void resetPassword(String email) throws NotFoundException {
+        User user = userService.getUserByEmail(email);
+
+        var token = emailVerificationTokenService.createToken(user);
+        emailService.sendVerificationEmail(email, token);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordRequestDTO dto)
+            throws ChangePasswordException, NotFoundException {
+
+        User user = userService.getUserById(userId);
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            throw new ChangePasswordException("Old password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userService.updateUser(user);
+    }
+
+    @Transactional
+    public void changeEmail(Long userId, UpdateEmailRequestDTO dto) throws NotFoundException {
+        User user = userService.getUserById(userId);
+        user.setEmail(dto.getNewEmail());
+        userService.updateUser(user);
     }
 
     private void saveUserJwtToken(User user, String jwtToken) {

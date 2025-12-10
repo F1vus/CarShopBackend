@@ -19,10 +19,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String email) throws NotFoundException {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("User %s not found", email)
-                ));
+        User user = userRepository.findUserByEmail(email).orElseThrow(RuntimeException::new);
         return UserDetailsImpl.build(user);
     }
 

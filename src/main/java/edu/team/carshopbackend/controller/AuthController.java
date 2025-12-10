@@ -2,6 +2,7 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.AuthDTO.*;
 import edu.team.carshopbackend.entity.User;
+import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import edu.team.carshopbackend.service.AuthenticationService;
 import edu.team.carshopbackend.service.EmailVerificationTokenService;
 import edu.team.carshopbackend.service.impl.UserService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,5 +69,24 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponseDTO> refresh(HttpServletRequest request) {
         AuthenticationResponseDTO dto = authenticationService.refreshToken(request);
         return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody ResetVerifyRequestDTO dto) {
+        authenticationService.resetPassword(dto.getEmail());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/change-password")
+    public void changePassword(@AuthenticationPrincipal UserDetailsImpl principal,
+                               @RequestBody ChangePasswordRequestDTO dto)  {
+        authenticationService.changePassword(principal.getId(), dto);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/change-email")
+    public void changeEmail(@AuthenticationPrincipal UserDetailsImpl principal,
+                            @RequestBody UpdateEmailRequestDTO dto)  {
+        authenticationService.changeEmail(principal.getId(), dto);
     }
 }
