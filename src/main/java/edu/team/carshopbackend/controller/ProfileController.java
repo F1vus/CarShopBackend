@@ -1,8 +1,5 @@
 package edu.team.carshopbackend.controller;
 
-import edu.team.carshopbackend.dto.AuthDTO.ChangePasswordRequestDTO;
-import edu.team.carshopbackend.dto.AuthDTO.ResetVerifyRequestDTO;
-import edu.team.carshopbackend.dto.AuthDTO.UpdateEmailRequestDTO;
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Profile;
@@ -59,24 +56,5 @@ public class ProfileController {
         return profileService.getProfileCars(profileId).stream()
                 .map(carMapper::mapTo)
                 .toList();
-    }
-
-    @PostMapping("/reset-password")
-    public void resetPassword(@RequestBody ResetVerifyRequestDTO dto) {
-        profileService.resetPassword(dto.getEmail());
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/change-password")
-    public void changePassword(@AuthenticationPrincipal UserDetailsImpl principal,
-                               @RequestBody ChangePasswordRequestDTO dto)  {
-        profileService.changePassword(principal.getId(), dto);
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/change-email")
-    public void changeEmail(@AuthenticationPrincipal UserDetailsImpl principal,
-                            @RequestBody UpdateEmailRequestDTO dto)  {
-        profileService.changeEmail(principal.getId(), dto);
     }
 }

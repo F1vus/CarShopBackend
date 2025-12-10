@@ -1,18 +1,13 @@
 package edu.team.carshopbackend.service;
 
-import edu.team.carshopbackend.dto.AuthDTO.ChangePasswordRequestDTO;
-import edu.team.carshopbackend.dto.AuthDTO.UpdateEmailRequestDTO;
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Profile;
-import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.error.exception.NotFoundException;
-import edu.team.carshopbackend.error.exception.ChangePasswordException;
 import edu.team.carshopbackend.repository.ProfileRepository;
 import edu.team.carshopbackend.service.impl.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,9 +19,6 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final UserService userService;
-    private final EmailVerificationTokenService emailVerificationTokenService;
-    private final EmailService emailService;
-    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Profile updateProfile(Long userId, ProfileDTO dto) {
@@ -57,35 +49,6 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new NotFoundException("Profile not found by id: " + profileId));
         return profile.getCars();
-    }
-
-    @Transactional
-    public void resetPassword(String email) throws NotFoundException {
-        User user = userService.getUserByEmail(email);
-
-        var token = emailVerificationTokenService.createToken(user);
-        emailService.sendVerificationEmail(email, token);
-    }
-
-    @Transactional
-    public void changePassword(Long userId, ChangePasswordRequestDTO dto)
-            throws ChangePasswordException, NotFoundException {
-
-        User user = userService.getUserById(userId);
-
-        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
-            throw new ChangePasswordException("Old password is incorrect");
-        }
-
-        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-        userService.updateUser(user);
-    }
-
-    @Transactional
-    public void changeEmail(Long userId, UpdateEmailRequestDTO dto) throws NotFoundException {
-            User user = userService.getUserById(userId);
-            user.setEmail(dto.getNewEmail());
-            userService.updateUser(user);
     }
 
     @Transactional

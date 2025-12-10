@@ -1,16 +1,24 @@
 package edu.team.carshopbackend.service;
 
 import edu.team.carshopbackend.config.jwtConfig.JwtCore;
-import edu.team.carshopbackend.dto.AuthDTO.LoginDTO;
-import edu.team.carshopbackend.dto.AuthDTO.SignupDTO;
+import edu.team.carshopbackend.dto.AuthDTO.*;
 import edu.team.carshopbackend.entity.JwtToken;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
 import edu.team.carshopbackend.entity.enums.JwtTokenType;
+import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
+import edu.team.carshopbackend.error.exception.ChangePasswordException;
+import edu.team.carshopbackend.error.exception.NotFoundException;
+import edu.team.carshopbackend.error.exception.RefreshTokenException;
 import edu.team.carshopbackend.repository.JwtTokenRepository;
 import edu.team.carshopbackend.service.impl.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,16 +39,22 @@ public class AuthenticationService {
     private final EmailVerificationTokenService emailVerificationTokenService;
 
 
-    public String authenticate(LoginDTO loginDTO) {
+    public AuthenticationResponseDTO authenticate(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
 
-        var user = userService.getUserByEmail(loginDTO.getEmail());
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        var user = userService.getUserById(userDetails.getId());
 
-        String jwt = jwtCore.generateToken(authentication);
-        saveUserJwtToken(user, jwt);
+        String accessJwt = jwtCore.generateToken(userDetails);
+        String refreshJwt = jwtCore.generateRefreshToken(userDetails);
+
+        saveUserJwtToken(user, accessJwt);
         log.info("User logged by email: {}", authentication.getName());
-        return jwt;
+        return AuthenticationResponseDTO.builder()
+                .accessToken(accessJwt)
+                .refreshToken(refreshJwt)
+                .build();
     }
 
     public String register(SignupDTO signupDTO) {
@@ -60,6 +74,73 @@ public class AuthenticationService {
 
         log.info("Registered new user  Id: {}, Email: {}", user.getId(), user.getEmail());
         return "User registered successfully";
+    }
+
+    @Transactional
+    public void resetPassword(String email) throws NotFoundException {
+        User user = userService.getUserByEmail(email);
+
+        var token = emailVerificationTokenService.createToken(user);
+        emailService.sendVerificationEmail(email, token);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordRequestDTO dto)
+            throws ChangePasswordException, NotFoundException {
+
+        User user = userService.getUserById(userId);
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+            throw new ChangePasswordException("Old password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userService.updateUser(user);
+    }
+
+    @Transactional
+    public void changeEmail(Long userId, UpdateEmailRequestDTO dto) throws NotFoundException {
+        User user = userService.getUserById(userId);
+        user.setEmail(dto.getNewEmail());
+        userService.updateUser(user);
+    }
+
+    public AuthenticationResponseDTO refreshToken(HttpServletRequest request) {
+        String refreshToken = null;
+        String email;
+
+        try{
+            final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                refreshToken = authHeader.substring(7);
+                if(!jwtCore.isRefreshToken(refreshToken)){
+                    throw new RefreshTokenException("Invalid refresh token");
+                }
+            }
+            if(refreshToken != null ) {
+                try{
+                    email = jwtCore.getEmailFromToken(refreshToken);
+                }catch (ExpiredJwtException e){
+                    throw new RefreshTokenException("Expired JWT token");
+                }catch (JwtException e){
+                    throw new RefreshTokenException("Invalid JWT token");
+                }
+                if(email != null) {
+                    User user = userService.getUserByEmail(email);
+
+                    String accessJwt = jwtCore.generateToken(UserDetailsImpl.build(user));
+                    saveUserJwtToken(user, accessJwt);
+
+                    return AuthenticationResponseDTO.builder()
+                            .accessToken(accessJwt)
+                            .refreshToken(refreshToken)
+                            .build();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     private void saveUserJwtToken(User user, String jwtToken) {
