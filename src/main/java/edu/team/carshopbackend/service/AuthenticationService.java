@@ -105,16 +105,6 @@ public class AuthenticationService {
         userService.updateUser(user);
     }
 
-    private void saveUserJwtToken(User user, String jwtToken) {
-        var token = new JwtToken();
-        token.setUser(user);
-        token.setToken(jwtToken);
-        token.setTokenType(JwtTokenType.BEARER);
-        token.setRevoked(false);
-        token.setExpired(false);
-        jwtTokenRepository.save(token);
-    }
-
     public AuthenticationResponseDTO refreshToken(HttpServletRequest request) {
         String refreshToken = null;
         String email;
@@ -123,8 +113,11 @@ public class AuthenticationService {
             final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 refreshToken = authHeader.substring(7);
+                if(!jwtCore.isRefreshToken(refreshToken)){
+                    throw new RefreshTokenException("Invalid refresh token");
+                }
             }
-            if(refreshToken != null){
+            if(refreshToken != null ) {
                 try{
                     email = jwtCore.getEmailFromToken(refreshToken);
                 }catch (ExpiredJwtException e){
@@ -148,5 +141,15 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    private void saveUserJwtToken(User user, String jwtToken) {
+        var token = new JwtToken();
+        token.setUser(user);
+        token.setToken(jwtToken);
+        token.setTokenType(JwtTokenType.BEARER);
+        token.setRevoked(false);
+        token.setExpired(false);
+        jwtTokenRepository.save(token);
     }
 }

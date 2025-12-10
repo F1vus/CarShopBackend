@@ -44,7 +44,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 jwt = authHeader.substring(7);
             }
-            if(jwt != null){
+            if(jwt != null && jwtCore.isAccessToken(jwt)){
                 try{
                     email = jwtCore.getEmailFromToken(jwt);
                 }catch (ExpiredJwtException e){

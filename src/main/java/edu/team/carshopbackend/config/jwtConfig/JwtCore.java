@@ -36,12 +36,15 @@ public class JwtCore {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("user_profile_id", user.getProfile().getId());
+        claims.put("typ", "access");
 
         return buildToken(claims, user, jwtExpiration);
     }
     public String generateRefreshToken(final UserDetails user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("typ", "refresh");
 
-        return buildToken(new HashMap<>(), user, refreshExpiration);
+        return buildToken(claims, user, refreshExpiration);
     }
 
 
@@ -67,5 +70,15 @@ public class JwtCore {
     public String getEmailFromToken(final String token) {
         Claims claims = extractAllClaims(token);
         return claims.getSubject();
+    }
+
+    public boolean isRefreshToken(final String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("typ", String.class).equals("refresh");
+    }
+
+    public boolean isAccessToken(final String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("typ", String.class).equals("access");
     }
 }
