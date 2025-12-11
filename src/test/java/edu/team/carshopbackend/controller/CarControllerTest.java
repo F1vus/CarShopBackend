@@ -19,6 +19,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -147,5 +151,115 @@ class CarControllerTest {
     }
 
 
+
+    @Test
+    void shouldSuggestionEmptyList() throws Exception {
+
+
+        when(carService.suggestCar("to")).thenReturn(Collections.emptyList());
+        mockMvc.perform(get("/api/v1/cars/suggestions")
+                        .param("query","to")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()", is(0)));
+
+
+        verify(carService, Mockito.times(1)).suggestCar("to");
+
+
+    }
+
+    @Test
+    void shouldSuggestionWithSpecialCharacters() throws Exception {
+
+        Car car1 = new Car();
+        car1.setName("@!Tojota");
+        car1.setPhotos(new ArrayList<>());
+
+        Car car2 = new Car();
+        car2.setName("-L");
+        car2.setPhotos(new ArrayList<>());
+
+        Car car3 = new Car();
+        car3.setName("#");
+        car3.setPhotos(new ArrayList<>());
+
+        Car car4 = new Car();
+        car4.setName("$%Tes");
+        car4.setPhotos(new ArrayList<>());
+
+        Car car5 = new Car();
+        car5.setName("^Au");
+        car5.setPhotos(new ArrayList<>());
+
+        Car car6 = new Car();
+        car6.setName("^Au*&*");
+        car6.setPhotos(new ArrayList<>());
+
+        Car car7 = new Car();
+        car7.setName("(BM)");
+        car7.setPhotos(new ArrayList<>());
+
+        when(carService.suggestCar("@#$%^&*()")).thenReturn(List.of(car1,car2,car3,car4,car5,car6,car7));
+        mockMvc.perform(get("/api/v1/cars/suggestions")
+                        .param("query", "@#$%^&*()")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()", is(7)))
+                .andExpect(jsonPath("$[0].name").value("@!Tojota"))
+                .andExpect(jsonPath("$[1].name").value("-L"))
+                .andExpect(jsonPath("$[2].name").value("#"))
+                .andExpect(jsonPath("$[3].name").value("$%Tes"))
+                .andExpect(jsonPath("$[4].name").value("^Au"))
+                .andExpect(jsonPath("$[5].name").value("^Au*&*"))
+                .andExpect(jsonPath("$[6].name").value("(BM)"));
+
+
+
+
+        verify(carService, Mockito.times(1)).suggestCar("@#$%^&*()");
+
+
+
+    }
+
+
+    @Test
+    void shouldSuggestiontCarsIgnoringCase() throws Exception {
+        Car car1 = new Car();
+        car1.setName("Tojota");
+        car1.setPhotos(new ArrayList<>());
+
+        Car car2 = new Car();
+        car2.setName("TOJO");
+        car2.setPhotos(new ArrayList<>());
+
+        Car car3 = new Car();
+        car3.setName("TOro");
+        car3.setPhotos(new ArrayList<>());
+
+        Car car4 = new Car();
+        car4.setName("toDO");
+        car4.setPhotos(new ArrayList<>());
+
+
+        when(carService.suggestCar("to")).thenReturn(List.of(car1,car2,car3,car4));
+        mockMvc.perform(get("/api/v1/cars/suggestions")
+                        .param("query", "to")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()", is(4)))
+                .andExpect(jsonPath("$[0].name").value("Tojota"))
+                .andExpect(jsonPath("$[1].name").value("TOJO"))
+                .andExpect(jsonPath("$[2].name").value("TOro"))
+                .andExpect(jsonPath("$[3].name").value("toDO"));
+
+        verify(carService, Mockito.times(1)).suggestCar("to");
+
+
+    }
 
 }
