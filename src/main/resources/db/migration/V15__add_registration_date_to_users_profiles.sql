@@ -1,0 +1,2 @@
+ALTER TABLE users_profiles
+    ADD COLUMN registration_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
