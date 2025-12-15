@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -63,6 +64,9 @@ public class Car {
     @ManyToOne
     @JoinColumn(name = "users_profiles_id", referencedColumnName = "id")
     private Profile owner;
+
+    @ManyToMany(mappedBy = "likedCars")
+    private List<Profile> likedByProfiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Photo> photos;

@@ -42,4 +42,12 @@ public class Profile {
 
     @Column(name = "profile_image")
     private String profileImage;
+
+    @ManyToMany
+    @JoinTable(
+            name = "profile_liked_cars",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    private List<Car> likedCars = new ArrayList<>();
 }
