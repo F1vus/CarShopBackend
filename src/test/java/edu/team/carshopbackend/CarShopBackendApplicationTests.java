@@ -9,5 +9,4 @@ class CarShopBackendApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
