@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,14 @@ public class Profile {
 
     @Column(name = "profile_image")
     private String profileImage;
+
+    @Column(name = "registration_date", nullable = false, updatable = false)
+    private LocalDateTime registrationDate;
+
+    @PrePersist
+    private void prePersist() {
+        this.registrationDate = LocalDateTime.now();
+    }
 
     @ManyToMany
     @JoinTable(
