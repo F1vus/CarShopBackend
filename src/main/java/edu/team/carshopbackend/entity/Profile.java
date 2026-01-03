@@ -51,4 +51,12 @@ public class Profile {
     private void prePersist() {
         this.registrationDate = LocalDateTime.now();
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "profile_liked_cars",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    private List<Car> likedCars = new ArrayList<>();
 }
