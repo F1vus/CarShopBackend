@@ -2,14 +2,20 @@ package edu.team.carshopbackend.controller;
 
 import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.dto.CarSuggestionDTO;
+import edu.team.carshopbackend.dto.CreateCarRequestDTO;
 import edu.team.carshopbackend.dto.PhotoDTO;
 import edu.team.carshopbackend.entity.Car;
+import edu.team.carshopbackend.entity.impl.UserDetailsImpl;
 import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.service.CarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,11 +28,15 @@ public class CarController {
     private final CarService carService;
     private final CarMapper carMapper;
 
-    @PostMapping("/cars")
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/cars", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Creates a new car", description = "Creates a new car in the system based on the submitted DTO data and returns the created object")
-    public CarDTO createCar(@RequestBody CarDTO carDTO) {
-        Car savedCar = carService.createProduct(carMapper.mapFrom(carDTO));
-        return carMapper.mapTo(savedCar);
+    public CarDTO createCar(
+            @RequestPart("car") CreateCarRequestDTO carRequest,
+            @RequestPart(value = "photos", required = false) List<MultipartFile> photos,
+            @AuthenticationPrincipal UserDetailsImpl principal
+    ) {
+        return carService.createCarWithPhotos(carRequest, photos, principal.getProfile());
     }
 
     @GetMapping("/cars")
