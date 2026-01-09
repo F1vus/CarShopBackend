@@ -1,12 +1,19 @@
 package edu.team.carshopbackend.service;
 
-import edu.team.carshopbackend.entity.Car;
+import edu.team.carshopbackend.client.PhotoClient;
+import edu.team.carshopbackend.client.UploadPhotoResponse;
+import edu.team.carshopbackend.dto.CarDTO;
+import edu.team.carshopbackend.dto.CreateCarRequestDTO;
+import edu.team.carshopbackend.entity.*;
 import edu.team.carshopbackend.error.exception.NotFoundException;
-import edu.team.carshopbackend.repository.CarRepository;
+import edu.team.carshopbackend.mapper.impl.CarMapper;
+import edu.team.carshopbackend.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +22,13 @@ import java.util.Optional;
 public class CarService {
 
     private final CarRepository carRepository;
+    private final ColorRepository colorRepository;
+    private final PetrolRepository petrolRepository;
+    private final CarProducerRepository carProducerRepository;
+    private final PhotoRepository photoRepository;
+    private final CarMapper carMapper;
+    private final PhotoClient photoClient;
+
 
     @Transactional
     public Car createProduct(Car car) {
@@ -63,5 +77,47 @@ public class CarService {
         carRepository.deleteById(id);
     }
 
+    @Transactional
+    public CarDTO createCarWithPhotos(CreateCarRequestDTO req, List<MultipartFile> photos, Profile owner) {
+        Car car = carMapper.mapFrom(req);
+
+        if (req.getColor() != null) {
+            Color color = colorRepository.findById(req.getColor())
+                    .orElseThrow(() -> new NotFoundException("Color not found"));
+            car.setColor(color);
+        }
+        if (req.getPetrolType() != null) {
+            Petrol petrol = petrolRepository.findById(req.getPetrolType())
+                    .orElseThrow(() -> new NotFoundException("Petrol not found"));
+            car.setPetrolType(petrol);
+        }
+        if (req.getProducent() != null) {
+            CarProducent producent = carProducerRepository.findById(req.getProducent())
+                    .orElseThrow(() -> new NotFoundException("Producent not found"));
+            car.setProducent(producent);
+        }
+
+        car.setOwner(owner);
+
+        car = carRepository.save(car);
+
+        if (photos != null && !photos.isEmpty()) {
+            for (MultipartFile file : photos) {
+                try{
+                    UploadPhotoResponse photoResponse = photoClient.uploadPhoto(car.getId(), file);
+
+                    Photo photoEntity = new Photo();
+                    photoEntity.setCar(car);
+                    photoEntity.setUrl(photoResponse.getUrl());
+
+                    photoRepository.save(photoEntity);
+                } catch (IOException e){
+                    throw new RuntimeException("Failed to upload photo", e);
+                }
+            }
+        }
+
+        return carMapper.mapTo(car);
+    }
 
 }
