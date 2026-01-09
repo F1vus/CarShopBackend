@@ -1,6 +1,7 @@
 package edu.team.carshopbackend.mapper.impl;
 
 import edu.team.carshopbackend.dto.CarDTO;
+import edu.team.carshopbackend.dto.CreateCarRequestDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.mapper.Mapper;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,13 @@ public class CarMapper implements Mapper<Car, CarDTO> {
     public Car mapFrom(CarDTO carDTO) {
         Car car = modelMapper.map(carDTO, Car.class);
         car.setHadAccidents(carDTO.getHadAccidents());
+        return car;
+    }
+
+    public Car mapFrom(CreateCarRequestDTO req) {
+        Car car = new Car();
+        modelMapper.map(req, car);
+        car.setHadAccidents(req.getHadAccidents() == null ? Boolean.FALSE : req.getHadAccidents());
         return car;
     }
 }
