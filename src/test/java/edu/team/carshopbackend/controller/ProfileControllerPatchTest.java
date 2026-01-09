@@ -1,6 +1,7 @@
 package edu.team.carshopbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.team.carshopbackend.config.jwtConfig.JwtCore;
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.entity.User;
@@ -28,6 +29,9 @@ public class ProfileControllerPatchTest {
 
     @MockitoBean
     private JwtTokenRepository jwtTokenRepository;
+
+    @MockitoBean
+    private JwtCore jwtCore;
 
     @Autowired
     private MockMvc mockMvc;
