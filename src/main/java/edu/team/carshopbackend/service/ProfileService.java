@@ -93,33 +93,8 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
-    @Transactional
-    public void addLikedCarByUserId(Long userId, Long carId) throws NotFoundException {
-        Profile profile = getProfileByUserId(userId);
-
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new NotFoundException("Car not found"));
-
-        if (!profile.getLikedCars().contains(car)) {
-            profile.getLikedCars().add(car);
-            profileRepository.save(profile);
-        }
-    }
-
-    @Transactional
-    public void removeLikedCarByUserId(Long userId, Long carId) throws NotFoundException {
-        Profile profile = getProfileByUserId(userId);
-
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new NotFoundException("Car not found"));
-
-        profile.getLikedCars().remove(car);
-        profileRepository.save(profile);
-    }
-
-    public List<CarDTO> findLikedByUserId(Long userId) throws NotFoundException {
-        Profile profile = getProfileByUserId(userId);
-        List<Car> likedCars = profileRepository.findLikedCarsByProfileId(profile.getId());
+    public List<CarDTO> findLikedByUserId(Long profileId) throws NotFoundException {
+        List<Car> likedCars = profileRepository.findLikedCarsByProfileId(profileId);
         return likedCars.stream()
                 .map(carMapper::mapTo)
                 .toList();
