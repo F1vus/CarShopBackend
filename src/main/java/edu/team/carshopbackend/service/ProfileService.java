@@ -1,9 +1,11 @@
 package edu.team.carshopbackend.service;
 
 import edu.team.carshopbackend.dto.AuthDTO.ProfileDTO;
+import edu.team.carshopbackend.dto.CarDTO;
 import edu.team.carshopbackend.entity.Car;
 import edu.team.carshopbackend.entity.Profile;
 import edu.team.carshopbackend.error.exception.NotFoundException;
+import edu.team.carshopbackend.mapper.impl.CarMapper;
 import edu.team.carshopbackend.repository.CarRepository;
 import edu.team.carshopbackend.repository.ProfileRepository;
 import edu.team.carshopbackend.service.impl.UserService;
@@ -18,8 +20,9 @@ import java.util.List;
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final CarRepository carRepository; // Nowe repozytorium dla samochodów
+    private final CarRepository carRepository;
     private final UserService userService;
+    private final CarMapper carMapper;
 
     @Transactional
     public Profile updateProfile(Long userId, ProfileDTO dto) {
@@ -88,5 +91,37 @@ public class ProfileService {
 
         profile.getLikedCars().remove(car);
         profileRepository.save(profile);
+    }
+
+    @Transactional
+    public void addLikedCarByUserId(Long userId, Long carId) throws NotFoundException {
+        Profile profile = getProfileByUserId(userId);
+
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new NotFoundException("Car not found"));
+
+        if (!profile.getLikedCars().contains(car)) {
+            profile.getLikedCars().add(car);
+            profileRepository.save(profile);
+        }
+    }
+
+    @Transactional
+    public void removeLikedCarByUserId(Long userId, Long carId) throws NotFoundException {
+        Profile profile = getProfileByUserId(userId);
+
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new NotFoundException("Car not found"));
+
+        profile.getLikedCars().remove(car);
+        profileRepository.save(profile);
+    }
+
+    public List<CarDTO> findLikedByUserId(Long userId) throws NotFoundException {
+        Profile profile = getProfileByUserId(userId);
+        List<Car> likedCars = profileRepository.findLikedCarsByProfileId(profile.getId());
+        return likedCars.stream()
+                .map(carMapper::mapTo)
+                .toList();
     }
 }

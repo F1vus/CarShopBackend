@@ -57,4 +57,24 @@
                     .map(carMapper::mapTo)
                     .toList();
         }
+
+        @PreAuthorize("isAuthenticated()")
+        @PostMapping("/liked-cars/{carId}")
+        public void addLikedCar(@AuthenticationPrincipal UserDetailsImpl principal,
+                                @PathVariable Long carId) throws Exception {
+            profileService.addLikedCarByUserId(principal.getId(), carId);
+        }
+
+        @PreAuthorize("isAuthenticated()")
+        @DeleteMapping("/liked-cars/{carId}")
+        public void removeLikedCar(@AuthenticationPrincipal UserDetailsImpl principal,
+                                   @PathVariable Long carId) throws Exception {
+            profileService.removeLikedCarByUserId(principal.getId(), carId);
+        }
+
+        @PreAuthorize("isAuthenticated()")
+        @GetMapping("/liked-cars/{userId}")
+        public List<CarDTO> getLikedCarIdsByUserId(@PathVariable Long userId) throws Exception {
+            return profileService.findLikedByUserId(userId);
+        }
     }
