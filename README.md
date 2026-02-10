@@ -40,8 +40,13 @@ Po poprawnym uruchomieniu kontenerów Dockera można uruchomić aplikację backe
 
 Projekt wykorzystuje Maven, dlatego aplikację można uruchomić za pomocą polecenia:
 
+Windows:
 ```bash
-mvn spring-boot:run
+mvnw.cmd spring-boot:run
+```
+Linux / macOS:
+```bash
+./mvnw spring-boot:run
 ```
 
 Alternatywnie aplikację można uruchomić bezpośrednio z poziomu środowiska IDE (np. IntelliJ IDEA) jako aplikację Spring Boot.
